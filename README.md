@@ -21,8 +21,8 @@
  <a href="https://vuejs.org/" target="_blank" rel="noreferrer"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vuejs/vuejs-original-wordmark.svg" alt="vuejs" width="40" height="40"/> </a>
 </p>
 
-<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=MikiDevAHM&show_icons=true&locale=en&layout=compact" alt="MikiDevAHM" /></p>
+<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=MikiDevAHM&show_icons=true&locale=en&theme=dracula" alt="MikiDevAHM" /></p>
 
-<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=MikiDevAHM&show_icons=true&locale=en" alt="MikiDevAHM" /></p>
+<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=MikiDevAHM&show_icons=true&theme=dracula" alt="MikiDevAHM" /></p>
 
-<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=MikiDevAHM&" alt="MikiDevAHM" /></p>
+<p><img align="center" src="https://github-readme-streak-stats.herokuapp.com/?user=MikiDevAHM&&theme=dracula" alt="MikiDevAHM" /></p>
