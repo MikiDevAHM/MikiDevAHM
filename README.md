@@ -1,6 +1,7 @@
 <h1 align="center">Olá, Meu nome é Miki Mittelsdorf</h1>
 <h3 align="center">Sou um desenvolvedor Iniciante Brasileiro apaixonado por tecnologia, comecei a interessar-me pela área em 2019, quando do nada resolvi criar a minha própria versão modificada do meu jogo favorito Minecraft Sem nenhum formação de base a respeito de como funcionava qualquer tipo de linguagem de Programação, fui até onde o tempo me deixava ir, passei por coisas que todo programador ja teve uma vez que passar como, horas tentando achar a respósta para um erro que era simples de resolver, ficando as vezes até de madrugada para terminar uma função que no dia seguinte voce percebe um jeito 10 vezes melhor para implementar ela, Enfim, Hoje desenvolvo sistemas muito mais Robustos e complexos, algo que me orgulha muito, pois é algo que sempre gostei, e vejo que valeu a pena seguir, acreditando no meu sonho e todo o tempo investido. E é claro sem esquecer do meu grande amigo/professor <a href="https://github.com/soudanieldias">Daniel Dias</a> que me ajudou muito a entender e programar com a linguagem JavaScript.</h3>
 
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=MikiDevAHM&label=Profile%20views&color=0e75b6&style=flat" alt="MikiDevAHM" /> </p>
 
 <p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=MikiDevAHM" alt="MikiDevAHM" /></a> </p>
 
