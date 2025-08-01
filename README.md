@@ -1,16 +1,49 @@
+# 👋 Olá, eu sou **Miki Mittelsdorf**
 
-# Olá, meu nome é Miki Mittelsdorf! 👋
+💻 **Desenvolvedor iniciante e entusiasta de tecnologia**
 
-Sou um desenvolvedor Iniciante Brasileiro apaixonado por tecnologia, comecei a interessar-me pela área em 2019, quando do nada resolvi criar a minha própria versão modificada do meu jogo favorito Minecraft Sem nenhum formação de base a respeito de como funcionava qualquer tipo de linguagem de Programação, fui até onde o tempo me deixava ir, passei por coisas que todo programador ja teve uma vez que passar como, horas tentando achar a respósta para um erro que era simples de resolver, ficando as vezes até de madrugada para terminar uma função que no dia seguinte voce percebe um jeito 10 vezes melhor para implementar ela, Enfim, Hoje desenvolvo sistemas muito mais Robustos e complexos, algo que me orgulha muito, pois é algo que sempre gostei, e vejo que valeu a pena seguir, acreditando no meu sonho e todo o tempo investido. E é claro sem esquecer do meu grande amigo/professor [Daniel Dias](https://github.com/soudanieldias) que me ajudou muito a entender e programar com a linguagem JavaScript.
+Minha jornada na programação começou em **2019**, quando, do nada, decidi criar uma versão modificada do meu jogo favorito: **Minecraft**.  
+Sem nenhuma formação prévia, comecei a explorar linguagens de programação e, aos poucos, fui aprendendo com erros, noites em claro e aquela sensação clássica de “**por que eu não pensei nisso antes?**” no dia seguinte.  
 
+Hoje, desenvolvo **sistemas mais robustos e complexos**, algo que me orgulha muito. Cada linha de código é um reflexo do meu esforço, do tempo investido e da paixão por criar.  
+
+E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande amigo e mentor [**Daniel Dias**](https://github.com/soudanieldias), que me ajudou a dar os primeiros passos com **JavaScript** e me incentivou a continuar evoluindo.
+
+---
 
 ## 🛠 Habilidades
-![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,kotlin,js,html,css,vue,electron,cs,py,bash,docker,gamemakerstudio,git,gradle,markdown,mariadb,json,mongodb,mysql)
+![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,kotlin,js,ts,html,css,vue,vite,react,electron,tailwind,nextjs,cs,dotnet,rust,tauri,py,bash,linux,ubuntu,docker,gamemakerstudio,git,gradle,maven,markdown,mariadb,json,mongodb,mysql)
 
+---
 
-## Status do Github
-[![trophy](https://github-profile-trophy.vercel.app/?username=MikiDevAHM&theme=onedark)](https://github.com/MikiDevAHM)
+## 🚀 Projetos em Destaque
+📦 A maioria dos meus projetos está disponível na organização **[ShindoClient](https://github.com/ShindoClient)**.  
 
-![MikiDevAHM's GitHub stats](https://github-readme-stats.vercel.app/api?username=MikiDevAHM&show_icons=true&theme=dark)
+✅ **[Shindo Client](https://github.com/ShindoClient/Shindo-Client)** – Um cliente customizado para Minecraft com sistema de mods, interface personalizada e diversas funcionalidades extras.  
+
+✅ **[Shindo Launcher](https://github.com/ShindoClient/Shindo-Launcher)** – Um launcher desenvolvido em C# com .NET Framework com suporte a atualizações automaticas (vai ser refeito em breve para adicionar suporte para Linux e MacOS)
+
+---
+
+## 📊 Status do GitHub
+> ⚠️ *Grande parte do meu trabalho está publicado na organização [ShindoClient](https://github.com/ShindoClient), por isso meu perfil pessoal pode não refletir toda minha atividade.*
+
+[![trophy](https://github-profile-trophy.vercel.app/?username=MikiDevAHM&theme=onedark)](https://github.com/ShindoClient)
 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=MikiDevAHM&theme=dark)
+
+---
+
+## 📫 Onde me encontrar
+
+[![Discord](https://img.shields.io/badge/Discord-mikiahm222-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/users/mikiahm222)  
+[![E-mail](https://img.shields.io/badge/Email-contact__miki@mittelsdorf.me-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:contact_miki@mittelsdorf.me)  
+[![Organização](https://img.shields.io/badge/Organização-ShindoClient-171515?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ShindoClient)
+
+---
+
+## 🎯 Objetivos Futuros
+- 📘 Aprimorar meus conhecimentos em **Kotlin**, **C#** e **Rust**  
+- 🌐 Contribuir com projetos **open-source** e colaborar com outros desenvolvedores  
+- 🚀 Criar novos sistemas e ferramentas para a comunidade de Minecraft  
+- 🎓 Me aprofundar em **arquitetura de software** e **boas práticas de programação**
