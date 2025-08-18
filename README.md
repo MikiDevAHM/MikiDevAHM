@@ -19,6 +19,7 @@ E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande am
     />
   </a>
 </p>
+
 ---
 
 ## 🚀 Projetos em Destaque
