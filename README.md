@@ -15,7 +15,7 @@ E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande am
 <p align="center">
   <a href="https://go-skill-icons.vercel.app/">
     <img
-      src="https://go-skill-icons.vercel.app/api/icons?i=java,kotlin,scala,js,ts,html,css,scss,discordjs,firebase,vue,vite,react,electron,svelte,tailwind,nextjs,nestjs,cs,dotnet,rust,tauri,py,bash,linux,ubuntu,docker,gamemakerstudio,git,gradle,maven,markdown,mariadb,json,mongodb,mysql,idea&titles=true&perline=7"
+      src="https://go-skill-icons.vercel.app/api/icons?i=java,kotlin,scala,js,ts,html,css,scss,discordjs,firebase,vue,vite,react,electron,svelte,tailwind,nextjs,nestjs,cs,dotnet,rust,tauri,py,bash,linux,ubuntu,docker,gamemakerstudio,git,gradle,maven,markdown,mariadb,json,mongodb,mysql,idea&titles=true&perline=9"
     />
   </a>
 </p>
