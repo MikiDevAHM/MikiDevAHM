@@ -21,7 +21,7 @@ E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande am
 
 ✅ **[Shindo Client](https://github.com/ShindoClient/Shindo-Client)** – Um cliente customizado para Minecraft com sistema de mods, interface personalizada e diversas funcionalidades extras.  
 
-✅ **[Shindo Launcher](https://github.com/ShindoClient/Shindo-Launcher)** – Um launcher desenvolvido em C# com .NET Framework com suporte a atualizações automaticas (vai ser refeito em breve para adicionar suporte para Linux e MacOS)
+✅ **[Shindo Launcher](https://github.com/ShindoClient/Shindo-Launcher)** – Um launcher que esta sendo desenvolvido com o framework Tauri (Front-End Svelte + TS com Back-End Rust) que vai ter atualizações automaticas e suporte linux mac e windows
 
 ---
 
