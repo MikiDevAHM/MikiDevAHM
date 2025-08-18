@@ -12,7 +12,7 @@ E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande am
 ---
 
 ## 🛠 Habilidades
-![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,kotlin,scala,js,ts,html,css,scss,vue,vite,react,electron,svelte,tailwind,nextjs,nestjs,cs,vbs,dotnet,rust,tauri,py,bash,linux,ubuntu,docker,gamemakerstudio,git,gradle,maven,markdown,mariadb,json,mongodb,mysql)
+![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,kotlin,scala,js,ts,html,css,scss,vue,vite,react,electron,svelte,tailwind,nextjs,nestjs,cs,dotnet,rust,tauri,py,bash,linux,ubuntu,docker,gamemakerstudio,git,gradle,maven,markdown,mariadb,json,mongodb,mysql)
 
 ---
 
