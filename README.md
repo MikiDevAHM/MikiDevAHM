@@ -12,8 +12,13 @@ E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande am
 ---
 
 ## 🛠 Habilidades
-![My Skills](https://go-skill-icons.vercel.app/api/icons?i=java,kotlin,scala,js,ts,html,css,scss,vue,vite,react,electron,svelte,tailwind,nextjs,nestjs,cs,dotnet,rust,tauri,py,bash,linux,ubuntu,docker,gamemakerstudio,git,gradle,maven,markdown,mariadb,json,mongodb,mysql&titles=true&perline=7)
-
+<p align="center">
+  <a href="https://go-skill-icons.vercel.app/">
+    <img
+      src="https://go-skill-icons.vercel.app/api/icons?i=java,kotlin,scala,js,ts,html,css,scss,discordjs,firebase,vue,vite,react,electron,svelte,tailwind,nextjs,nestjs,cs,dotnet,rust,tauri,py,bash,linux,ubuntu,docker,gamemakerstudio,git,gradle,maven,markdown,mariadb,json,mongodb,mysql,idea&titles=true&perline=7"
+    />
+  </a>
+</p>
 ---
 
 ## 🚀 Projetos em Destaque
