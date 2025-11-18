@@ -48,6 +48,8 @@ E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande am
 
 [![Discord Presence](https://lanyard.cnrad.dev/api/928040478220382210?borderRadius=10px&theme=dark&showDisplayName=true&hideDecoration=true)](https://discord.com/users/928040478220382210)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R81OOSZD)
+
 ---
 
 ## 🎯 Objetivos Futuros
