@@ -29,15 +29,6 @@ E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande am
 
 ---
 
-## 📊 Status do GitHub
-> ⚠️ *Grande parte do meu trabalho está publicado na organização [ShindoClient](https://github.com/ShindoClient), por isso meu perfil pessoal pode não refletir toda minha atividade.*
-
-[![trophy](https://github-profile-trophy.vercel.app/?username=MikiDevAHM&theme=onedark)](https://github.com/ShindoClient)
-
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=MikiDevAHM&theme=dark)
-
----
-
 ## 📫 Onde me encontrar
 
 [![Discord](https://img.shields.io/badge/Discord-mikiahm222-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/users/mikiahm222)  
