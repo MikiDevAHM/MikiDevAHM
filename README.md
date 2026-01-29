@@ -32,7 +32,7 @@ E, claro, não posso deixar de mencionar o apoio e ensinamentos do meu grande am
 ## 📫 Onde me encontrar
 
 [![Discord](https://img.shields.io/badge/Discord-mikiahm222-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/users/mikiahm222)  
-[![E-mail](https://img.shields.io/badge/Email-contact__miki@mittelsdorf.me-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:contact_miki@mittelsdorf.me)  
+[![E-mail](https://img.shields.io/badge/Email-contato_miki@mittelsdorf.me-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:contact_miki@mittelsdorf.me)  
 [![Organização](https://img.shields.io/badge/Organização-ShindoClient-171515?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ShindoClient)
 
 [![Discord Presence](https://lanyard.cnrad.dev/api/928040478220382210?borderRadius=10px&theme=dark&showDisplayName=true&hideDecoration=true)](https://discord.com/users/928040478220382210)
