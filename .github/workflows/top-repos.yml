@@ -100,7 +100,7 @@ jobs:
 
             // gerar SVGs individuais inline
             const svgCards = repos.map((repo,i)=>{
-              const barWidth = Math.round((repo.commits/maxCommits)*520);
+              const barWidth = Math.round((repo.commits/maxCommits)*500);
               const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
 
               const svg = `
@@ -120,7 +120,7 @@ jobs:
                     </linearGradient>
                   </defs>
                   <rect x="90" y="95" width="${barWidth}" height="16" rx="8" fill="url(#grad${i})"/>
-                  <text x="620" y="110" fill="#f8f8f2" font-size="12">${repo.commits}/${maxCommits}</text>
+                  <text x="600" y="110" fill="#f8f8f2" font-size="12">${repo.commits}/${maxCommits}</text>
                 </a>
                 </svg>`;
               return svg;
