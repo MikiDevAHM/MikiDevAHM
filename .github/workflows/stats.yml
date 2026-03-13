@@ -21,12 +21,21 @@ jobs:
             const fs = require("fs");
             const pathDir = "generated";
             fs.mkdirSync(pathDir, { recursive: true });
-
+            
             const username = "MikiDevAHM";
-
-            // pegar commits do usuário (limitado a 100 por repositório, pode aumentar)
-            const reposResult = await github.graphql(`
+            
+            // 1️⃣ Pegar o ID real do usuário
+            const viewer = await github.graphql(`
               query($login:String!) {
+                user(login:$login) { id }
+              }
+            `, { login: username });
+            
+            const userId = viewer.user.id;
+            
+            // 2️⃣ Buscar commits usando o ID (tipo ID)
+            const reposResult = await github.graphql(`
+              query($login:String!, $userId:ID!) {
                 user(login:$login) {
                   repositories(first:100, ownerAffiliations:OWNER) {
                     nodes {
@@ -34,7 +43,7 @@ jobs:
                       defaultBranchRef {
                         target {
                           ... on Commit {
-                            history(first:100, author:{id:$login}) {
+                            history(first:100, author:{id:$userId}) {
                               nodes { committedDate }
                             }
                           }
@@ -44,9 +53,9 @@ jobs:
                   }
                 }
               }
-            `, { login: username });
-
-            // juntar todos os commits
+            `, { login: username, userId });
+            
+            // 3️⃣ processar commits normalmente
             let allDates = [];
             reposResult.user.repositories.nodes.forEach(repo => {
               if(repo.defaultBranchRef?.target?.history?.nodes){
@@ -55,17 +64,17 @@ jobs:
                 });
               }
             });
-
-            allDates = Array.from(new Set(allDates)).sort(); // remove duplicatas e ordena
-
+            
+            allDates = Array.from(new Set(allDates)).sort();
+            
             const totalCommits = allDates.length;
-
+            
             // calcular streaks
             let maxStreak = 0;
             let currentStreak = 0;
             let lastDate = null;
             const today = new Date().toISOString().slice(0,10);
-
+            
             allDates.forEach(d=>{
               if(!lastDate) { currentStreak=1; }
               else {
@@ -78,53 +87,51 @@ jobs:
               if(currentStreak>maxStreak) maxStreak=currentStreak;
               lastDate = d;
             });
-
-            // se o último commit foi ontem ou hoje, streak continua
+            
+            // verificar streak atual
             if(lastDate!==today){
               const diff = (new Date(today)-new Date(lastDate))/(1000*60*60*24);
               if(diff>1) currentStreak=0;
             }
-
-            // cores e design Dracula
+            
+            // gerar SVG (Dracula theme)
             const width = 600, height = 180;
             const gradientStart = "#bd93f9";
             const gradientEnd = "#ff79c6";
             const bg = "#282a36";
             const fg = "#f8f8f2";
-
+            
             const svg = `
-              <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-                <style>
-                  text { font-family: 'JetBrains Mono', monospace; }
-                  .title { font-size: 20px; fill: ${fg}; font-weight: bold; }
-                  .label { font-size: 14px; fill: #8be9fd; }
-                  .value { font-size: 18px; fill: #f1fa8c; font-weight: bold; }
-                  .bar-bg { fill: #44475a; rx:6; ry:6; }
-                </style>
-              
-                <rect width="100%" height="100%" rx="18" fill="${bg}"/>
-              
-                <text x="30" y="40" class="title">📊 GitHub Stats</text>
-              
-                <text x="30" y="80" class="label">🧾 Total Commits</text>
-                <text x="200" y="80" class="value">${totalCommits}</text>
-                <rect x="30" y="90" width="540" height="12" class="bar-bg"/>
-                <defs>
-                  <linearGradient id="gradTotal" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="${gradientStart}"/>
-                    <stop offset="100%" stop-color="${gradientEnd}"/>
-                  </linearGradient>
-                </defs>
-                <rect x="30" y="90" width="${Math.min(totalCommits,100)*5.4}" height="12" fill="url(#gradTotal)" rx="6" ry="6"/>
-              
-                <text x="30" y="130" class="label">🔥 Current Streak</text>
-                <text x="200" y="130" class="value">${currentStreak} days</text>
-              
-                <text x="30" y="160" class="label">🏆 Longest Streak</text>
-                <text x="200" y="160" class="value">${maxStreak} days</text>
-              
-              </svg>
-                          `;
-
+            <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+              <style>
+                text { font-family: 'JetBrains Mono', monospace; }
+                .title { font-size: 20px; fill: ${fg}; font-weight: bold; }
+                .label { font-size: 14px; fill: #8be9fd; }
+                .value { font-size: 18px; fill: #f1fa8c; font-weight: bold; }
+                .bar-bg { fill: #44475a; rx:6; ry:6; }
+              </style>
+            
+              <rect width="100%" height="100%" rx="18" fill="${bg}"/>
+              <text x="30" y="40" class="title">📊 GitHub Stats</text>
+              <text x="30" y="80" class="label">🧾 Total Commits</text>
+              <text x="200" y="80" class="value">${totalCommits}</text>
+            
+              <rect x="30" y="90" width="540" height="12" class="bar-bg"/>
+              <defs>
+                <linearGradient id="gradTotal" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="${gradientStart}"/>
+                  <stop offset="100%" stop-color="${gradientEnd}"/>
+                </linearGradient>
+              </defs>
+              <rect x="30" y="90" width="${Math.min(totalCommits,100)*5.4}" height="12" fill="url(#gradTotal)" rx="6" ry="6"/>
+            
+              <text x="30" y="130" class="label">🔥 Current Streak</text>
+              <text x="200" y="130" class="value">${currentStreak} days</text>
+            
+              <text x="30" y="160" class="label">🏆 Longest Streak</text>
+              <text x="200" y="160" class="value">${maxStreak} days</text>
+            </svg>
+            `;
+            
             fs.writeFileSync(`${pathDir}/streak.svg`, svg);
             console.log("SVG de streak gerado com sucesso em 'generated/streak.svg'!");
