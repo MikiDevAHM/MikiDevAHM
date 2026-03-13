@@ -10,11 +10,15 @@
 ![](https://github-profile-trophy-orcin-eta.vercel.app/?username=MikiDevAHM&theme=dracula&no-frame=false&no-bg=false&margin-w=4)
 
 ### 🔝 Top Contributed Repositories
-<img src="./generated/repo-1.svg" />
-<img src="./generated/repo-2.svg" />
-<img src="./generated/repo-3.svg" />
-<img src="./generated/repo-4.svg" />
-<img src="./generated/repo-5.svg" />
+<div align="center">
+
+<img src="./generated/repo-1.svg" alt="Top Repo 1"/>
+<img src="./generated/repo-2.svg" alt="Top Repo 2"/>
+<img src="./generated/repo-3.svg" alt="Top Repo 3"/>
+<img src="./generated/repo-4.svg" alt="Top Repo 4"/>
+<img src="./generated/repo-5.svg" alt="Top Repo 5"/>
+
+</div>
 
 ---
 [![](https://visitcount.itsvg.in/api?id=MikiDevAHM&icon=2&color=5)](https://visitcount.itsvg.in)
