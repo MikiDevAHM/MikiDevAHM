@@ -136,10 +136,10 @@ jobs:
             fs.writeFileSync(`${pathDir}/streak.svg`, svg);
             console.log("SVG de streak gerado com sucesso em 'generated/streak.svg'!");
             
-            - name: Commit SVG
-              run: |
-                git config user.name "github-actions"
-                git config user.email "github-actions@github.com"
-                git add generated/streak.svg
-                git commit -m "Atualiza streak SVG"
-                git push
+      - name: Commit SVG
+        run: |
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
+            git add generated/streak.svg
+            git commit -m "Atualiza streak SVG"
+            git push
