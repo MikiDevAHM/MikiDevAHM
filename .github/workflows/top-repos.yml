@@ -1,26 +1,76 @@
-name: Top Repositories
+name: Top Contributed Repos
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  metrics:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Generate repository metrics
-        uses: lowlighter/metrics@latest
+      - uses: actions/checkout@v4
+
+      - name: Generate SVG
+        uses: actions/github-script@v7
         with:
-          user: MikiDevAHM
-          token: ${{ secrets.METRICS_TOKEN }}
+          github-token: ${{ secrets.METRICS_TOKEN }}
+          script: |
+            const username = "MikiDevAHM";
 
-          # IMPORTANTES 👇
-          template: classic
-          base: repositories
+            const result = await github.graphql(`
+            query($login:String!) {
+              user(login:$login) {
+                repositoriesContributedTo(
+                  first: 50
+                  contributionTypes: [COMMIT, PULL_REQUEST]
+                  includeUserRepositories: true
+                  orderBy:{field:STARGAZERS,direction:DESC}
+                ) {
+                  nodes {
+                    name
+                    stargazerCount
+                    owner { login }
+                  }
+                }
+              }
+            }`, { login: username });
 
-          config_timezone: Europe/Vienna
+            const repos = result.user.repositoriesContributedTo.nodes
+              .slice(0,5);
+
+            const maxStars = Math.max(...repos.map(r => r.stargazerCount), 1);
+
+            const bars = repos.map((r, i) => {
+              const width = Math.round((r.stargazerCount / maxStars) * 300);
+              return `
+                <text x="20" y="${60+i*60}" fill="#f8f8f2" font-size="14">
+                  ${i+1}. ${r.owner.login}/${r.name}
+                </text>
+                <rect x="20" y="${70+i*60}" width="300" height="10" fill="#44475a" rx="5"/>
+                <rect x="20" y="${70+i*60}" width="${width}" height="10" fill="#bd93f9" rx="5"/>
+              `;
+            }).join("");
+
+            const svg = `
+            <svg width="340" height="${repos.length*60+60}" xmlns="http://www.w3.org/2000/svg">
+              <rect width="100%" height="100%" fill="#282a36" rx="12"/>
+              <text x="20" y="30" fill="#ff79c6" font-size="18" font-weight="bold">
+                🔝 Top Contributed Repositories
+              </text>
+              ${bars}
+            </svg>`;
+
+            require("fs").writeFileSync("top-repos.svg", svg);
+
+      - name: Commit SVG
+        run: |
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add top-repos.svg
+          git commit -m "update top repos" || exit 0
+          git push
