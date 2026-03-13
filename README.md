@@ -9,8 +9,9 @@
 ## 🏆 GitHub Trophies
 ![](https://github-profile-trophy-orcin-eta.vercel.app/?username=MikiDevAHM&theme=dracula&no-frame=false&no-bg=false&margin-w=4)
 
-### 🔝 Top Contributed Repo
-![Top Repositories](./github-metrics.svg)
+### 🔝 Top Contributed Repositories
+
+![Top repos](./top-repos.svg)
 
 ---
 [![](https://visitcount.itsvg.in/api?id=MikiDevAHM&icon=2&color=5)](https://visitcount.itsvg.in)
