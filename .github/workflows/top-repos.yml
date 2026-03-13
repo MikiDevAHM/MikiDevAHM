@@ -34,6 +34,12 @@ jobs:
             `, { login: username });
             const userId = viewer.user.id;
 
+            // carregar cache
+            let cache = {};
+            if(fs.existsSync(cacheFile)){
+              cache = JSON.parse(fs.readFileSync(cacheFile,"utf8"));
+            }
+
             // buscar repos contribuídos
             const result = await github.graphql(`
               query($login:String!, $userId:ID!) {
@@ -78,7 +84,7 @@ jobs:
               return;
             }
 
-            // ordenar por commits
+            // ordenar por commits e pegar top 5
             repos.sort((a,b) => b.commits - a.commits);
             repos = repos.slice(0,5);
 
@@ -95,26 +101,25 @@ jobs:
               const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
 
               const svg = `
-              <svg width="650" height="130" xmlns="http://www.w3.org/2000/svg">
-              <style>text{font-family:JetBrains Mono, monospace}</style>
-              <a href="${repo.url}">
-                <rect width="100%" height="100%" rx="18" fill="#282a36"/>
-                <image href="${repo.avatar}" x="25" y="30" width="40" height="40"/>
-                <text x="80" y="45" fill="#f8f8f2" font-size="18" font-weight="600">${medal} ${repo.owner}/${repo.name}</text>
-                <text x="80" y="70" fill="#8be9fd" font-size="14">🧾 ${repo.commits} commits</text>
-                <text x="200" y="70" fill="#f1fa8c" font-size="14">⭐ ${repo.stars}</text>
-                <rect x="80" y="85" width="520" height="12" rx="6" fill="#44475a"/>
-                <defs>
-                  <linearGradient id="grad${i}" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="${gradientStart}"/>
-                    <stop offset="100%" stop-color="${gradientEnd}"/>
-                  </linearGradient>
-                </defs>
-                <rect x="80" y="85" width="${barWidth}" height="12" rx="6" fill="url(#grad${i})"/>
-                <text x="610" y="96" fill="#f8f8f2" font-size="12">${repo.commits}/${maxCommits}</text>
-              </a>
-              </svg>
-              `;
+                <svg width="650" height="130" xmlns="http://www.w3.org/2000/svg">
+                <style>text{font-family:JetBrains Mono, monospace}</style>
+                <a href="${repo.url}">
+                  <rect width="100%" height="100%" rx="18" fill="#282a36"/>
+                  <image href="${repo.avatar}" x="25" y="30" width="40" height="40"/>
+                  <text x="80" y="45" fill="#f8f8f2" font-size="18" font-weight="600">${medal} ${repo.owner}/${repo.name}</text>
+                  <text x="80" y="70" fill="#8be9fd" font-size="14">🧾 ${repo.commits} commits</text>
+                  <text x="200" y="70" fill="#f1fa8c" font-size="14">⭐ ${repo.stars}</text>
+                  <rect x="80" y="85" width="520" height="12" rx="6" fill="#44475a"/>
+                  <defs>
+                    <linearGradient id="grad${i}" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="${gradientStart}"/>
+                      <stop offset="100%" stop-color="${gradientEnd}"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="80" y="85" width="${barWidth}" height="12" rx="6" fill="url(#grad${i})"/>
+                  <text x="610" y="96" fill="#f8f8f2" font-size="12">${repo.commits}/${maxCommits}</text>
+                </a>
+                </svg>`;
               fs.writeFileSync(`${pathDir}/repo-${i+1}.svg`, svg);
             });
 
@@ -136,3 +141,11 @@ jobs:
             fs.writeFileSync(`${pathDir}/grid.svg`, gridSvg);
 
             console.log("SVGs gerados com sucesso na pasta 'generated/'!");
+
+      - name: Commit generated SVGs
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add generated/*.svg
+          git commit -m "Update top repos SVGs" || echo "Nothing to commit"
+          git push
