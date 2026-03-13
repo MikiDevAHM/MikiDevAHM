@@ -8,6 +8,7 @@
 <p align="center">
   <img src="./generated/streak.svg" />
 </p>
+
 ---
 
 ## 🏆 GitHub Trophies
