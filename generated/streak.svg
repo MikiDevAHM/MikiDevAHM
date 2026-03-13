@@ -10,7 +10,7 @@
 
   <rect width="100%" height="100%" fill="#282a36" rx="16"/>
 
-  <text x="30" y="40" class="title">GitHub Streak &amp; Commits</text>
+  <text x="30" y="40" class="title">GitHub Streak</text>
   <text x="30" y="80" class="label">First commit:</text>
   <text x="200" y="80" class="value">2025-04-06</text>
   <text x="30" y="110" class="label">Total commits:</text>
