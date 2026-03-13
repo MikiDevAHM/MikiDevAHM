@@ -1,1 +1,96 @@
-<svg width="1320" height="430" xmlns="http://www.w3.org/2000/svg"><image href="repo-1.svg" x="0" y="0" width="650" height="130"/><image href="repo-2.svg" x="670" y="0" width="650" height="130"/><image href="repo-3.svg" x="0" y="150" width="650" height="130"/><image href="repo-4.svg" x="670" y="150" width="650" height="130"/><image href="repo-5.svg" x="0" y="300" width="650" height="130"/></svg>
+<svg width="1420" height="460" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0,0)">
+    
+    <style>text{font-family:JetBrains Mono, monospace}</style>
+    <a href="https://github.com/ShindoClient/shindo-cdn">
+      <rect width="100%" height="100%" rx="18" fill="#282a36"/>
+      <image href="https://avatars.githubusercontent.com/u/218399144?v=4" x="30" y="35" width="50" height="50"/>
+      <text x="90" y="55" fill="#f8f8f2" font-size="20" font-weight="600">🥇 ShindoClient/shindo-cdn</text>
+      <text x="90" y="85" fill="#8be9fd" font-size="14">🧾 109 commits</text>
+      <text x="250" y="85" fill="#f1fa8c" font-size="14">⭐ 0</text>
+      <rect x="90" y="95" width="520" height="16" rx="8" fill="#44475a"/>
+      <defs>
+        <linearGradient id="grad0" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#bd93f9"/>
+          <stop offset="100%" stop-color="#ff79c6"/>
+        </linearGradient>
+      </defs>
+      <rect x="90" y="95" width="520" height="16" rx="8" fill="url(#grad0)"/>
+      <text x="620" y="110" fill="#f8f8f2" font-size="12">109/109</text>
+    </a>
+    </g><g transform="translate(720,0)">
+    
+    <style>text{font-family:JetBrains Mono, monospace}</style>
+    <a href="https://github.com/ShindoClient/shindo-status">
+      <rect width="100%" height="100%" rx="18" fill="#282a36"/>
+      <image href="https://avatars.githubusercontent.com/u/218399144?v=4" x="30" y="35" width="50" height="50"/>
+      <text x="90" y="55" fill="#f8f8f2" font-size="20" font-weight="600">🥈 ShindoClient/shindo-status</text>
+      <text x="90" y="85" fill="#8be9fd" font-size="14">🧾 90 commits</text>
+      <text x="250" y="85" fill="#f1fa8c" font-size="14">⭐ 0</text>
+      <rect x="90" y="95" width="520" height="16" rx="8" fill="#44475a"/>
+      <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#bd93f9"/>
+          <stop offset="100%" stop-color="#ff79c6"/>
+        </linearGradient>
+      </defs>
+      <rect x="90" y="95" width="429" height="16" rx="8" fill="url(#grad1)"/>
+      <text x="620" y="110" fill="#f8f8f2" font-size="12">90/109</text>
+    </a>
+    </g><g transform="translate(0,160)">
+    
+    <style>text{font-family:JetBrains Mono, monospace}</style>
+    <a href="https://github.com/ShindoClient/website">
+      <rect width="100%" height="100%" rx="18" fill="#282a36"/>
+      <image href="https://avatars.githubusercontent.com/u/218399144?v=4" x="30" y="35" width="50" height="50"/>
+      <text x="90" y="55" fill="#f8f8f2" font-size="20" font-weight="600">🥉 ShindoClient/website</text>
+      <text x="90" y="85" fill="#8be9fd" font-size="14">🧾 79 commits</text>
+      <text x="250" y="85" fill="#f1fa8c" font-size="14">⭐ 0</text>
+      <rect x="90" y="95" width="520" height="16" rx="8" fill="#44475a"/>
+      <defs>
+        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#bd93f9"/>
+          <stop offset="100%" stop-color="#ff79c6"/>
+        </linearGradient>
+      </defs>
+      <rect x="90" y="95" width="377" height="16" rx="8" fill="url(#grad2)"/>
+      <text x="620" y="110" fill="#f8f8f2" font-size="12">79/109</text>
+    </a>
+    </g><g transform="translate(720,160)">
+    
+    <style>text{font-family:JetBrains Mono, monospace}</style>
+    <a href="https://github.com/ShindoClient/shindo-client">
+      <rect width="100%" height="100%" rx="18" fill="#282a36"/>
+      <image href="https://avatars.githubusercontent.com/u/218399144?v=4" x="30" y="35" width="50" height="50"/>
+      <text x="90" y="55" fill="#f8f8f2" font-size="20" font-weight="600"> ShindoClient/shindo-client</text>
+      <text x="90" y="85" fill="#8be9fd" font-size="14">🧾 54 commits</text>
+      <text x="250" y="85" fill="#f1fa8c" font-size="14">⭐ 0</text>
+      <rect x="90" y="95" width="520" height="16" rx="8" fill="#44475a"/>
+      <defs>
+        <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#bd93f9"/>
+          <stop offset="100%" stop-color="#ff79c6"/>
+        </linearGradient>
+      </defs>
+      <rect x="90" y="95" width="258" height="16" rx="8" fill="url(#grad3)"/>
+      <text x="620" y="110" fill="#f8f8f2" font-size="12">54/109</text>
+    </a>
+    </g><g transform="translate(0,320)">
+    
+    <style>text{font-family:JetBrains Mono, monospace}</style>
+    <a href="https://github.com/ShindoClient/shindo-websocket">
+      <rect width="100%" height="100%" rx="18" fill="#282a36"/>
+      <image href="https://avatars.githubusercontent.com/u/218399144?v=4" x="30" y="35" width="50" height="50"/>
+      <text x="90" y="55" fill="#f8f8f2" font-size="20" font-weight="600"> ShindoClient/shindo-websocket</text>
+      <text x="90" y="85" fill="#8be9fd" font-size="14">🧾 51 commits</text>
+      <text x="250" y="85" fill="#f1fa8c" font-size="14">⭐ 0</text>
+      <rect x="90" y="95" width="520" height="16" rx="8" fill="#44475a"/>
+      <defs>
+        <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#bd93f9"/>
+          <stop offset="100%" stop-color="#ff79c6"/>
+        </linearGradient>
+      </defs>
+      <rect x="90" y="95" width="243" height="16" rx="8" fill="url(#grad4)"/>
+      <text x="620" y="110" fill="#f8f8f2" font-size="12">51/109</text>
+    </a>
+    </g></svg>
