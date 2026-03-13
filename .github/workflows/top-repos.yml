@@ -95,12 +95,12 @@ jobs:
             const gradientStart = "#bd93f9";
             const gradientEnd = "#ff79c6";
 
-            const cardWidth = 700;
+            const cardWidth = 720;
             const cardHeight = 140;
 
-            // gerar SVGs individuais inline
-            const svgCards = repos.map((repo,i)=>{
-              const barWidth = Math.round((repo.commits/maxCommits)*480);
+            // gerar SVGs individuais
+            repos.forEach((repo,i)=>{
+              const barWidth = Math.round((repo.commits/maxCommits)*520);
               const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
 
               const svg = `
@@ -112,7 +112,7 @@ jobs:
                   <text x="90" y="55" fill="#f8f8f2" font-size="20" font-weight="600">${medal} ${repo.owner}/${repo.name}</text>
                   <text x="90" y="85" fill="#8be9fd" font-size="14">🧾 ${repo.commits} commits</text>
                   <text x="250" y="85" fill="#f1fa8c" font-size="14">⭐ ${repo.stars}</text>
-                  <rect x="90" y="95" width="480" height="16" rx="8" fill="#44475a"/>
+                  <rect x="90" y="95" width="520" height="16" rx="8" fill="#44475a"/>
                   <defs>
                     <linearGradient id="grad${i}" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stop-color="${gradientStart}"/>
@@ -120,33 +120,14 @@ jobs:
                     </linearGradient>
                   </defs>
                   <rect x="90" y="95" width="${barWidth}" height="16" rx="8" fill="url(#grad${i})"/>
-                  <text x="580" y="110" fill="#f8f8f2" font-size="10">${repo.commits}/${maxCommits}</text>
+                  <text x="620" y="110" fill="#f8f8f2" font-size="12">${repo.commits}/${maxCommits}</text>
                 </a>
                 </svg>`;
-              return svg;
+
+              fs.writeFileSync(`${pathDir}/repo-${i+1}.svg`, svg);
             });
 
-            // gerar GRID inline
-            const gap = 20;
-            const gridCols = 2;
-            const gridRows = Math.ceil(svgCards.length/gridCols);
-            const gridWidth = cardWidth*gridCols + gap*(gridCols-1);
-            const gridHeight = cardHeight*gridRows + gap*(gridRows-1);
-
-            let gridSvg = `<svg width="${gridWidth}" height="${gridHeight}" xmlns="http://www.w3.org/2000/svg">`;
-            svgCards.forEach((svg,i)=>{
-              const col = i % gridCols;
-              const row = Math.floor(i/gridCols);
-              const x = col*(cardWidth+gap);
-              const y = row*(cardHeight+gap);
-              // inline o SVG individual
-              const content = svg.replace('<svg width="700" height="140" xmlns="http://www.w3.org/2000/svg">','').replace('</svg>','');
-              gridSvg += `<g transform="translate(${x},${y})">${content}</g>`;
-            });
-            gridSvg += "</svg>";
-            fs.writeFileSync(`${pathDir}/grid.svg`, gridSvg);
-
-            console.log("SVGs gerados com sucesso na pasta 'generated/'!");
+            console.log("SVGs individuais gerados com sucesso na pasta 'generated/'!");
 
       - name: Commit generated SVGs
         run: |
