@@ -11,7 +11,11 @@
 
 ### 🔝 Top Contributed Repositories
 
-![Top repos](./top-repos.svg)
+<img src="./generated/repo-1.svg" />
+<img src="./generated/repo-2.svg" />
+<img src="./generated/repo-3.svg" />
+<img src="./generated/repo-4.svg" />
+<img src="./generated/repo-5.svg" />
 
 ---
 [![](https://visitcount.itsvg.in/api?id=MikiDevAHM&icon=2&color=5)](https://visitcount.itsvg.in)
