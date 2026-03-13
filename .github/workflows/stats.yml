@@ -1,7 +1,8 @@
-name: Generate GitHub Streak SVG
+name: Generate Git Streak SVG
+
 on:
   schedule:
-    - cron: "0 3 * * *"
+    - cron: "0 3 * * *" # roda todo dia às 3h
   workflow_dispatch:
 
 permissions:
@@ -10,10 +11,11 @@ permissions:
 jobs:
   streak:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate commit streak SVG
+      - name: Generate Streak SVG
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.METRICS_TOKEN }}
@@ -21,30 +23,35 @@ jobs:
             const fs = require("fs");
             const pathDir = "generated";
             fs.mkdirSync(pathDir, { recursive: true });
-            
+
             const username = "MikiDevAHM";
-            
-            // 1️⃣ Pegar o ID real do usuário
+
+            // Pegar o ID do usuário
             const viewer = await github.graphql(`
               query($login:String!) {
                 user(login:$login) { id }
               }
             `, { login: username });
-            
             const userId = viewer.user.id;
-            
-            // 2️⃣ Buscar commits usando o ID (tipo ID)
-            const reposResult = await github.graphql(`
+
+            // Pegar todos os repos contribuídos (incluindo orgs)
+            const reposData = await github.graphql(`
               query($login:String!, $userId:ID!) {
                 user(login:$login) {
-                  repositories(first:100, ownerAffiliations:OWNER) {
+                  repositoriesContributedTo(
+                    first:100
+                    contributionTypes:[COMMIT,PULL_REQUEST]
+                    includeUserRepositories:true
+                  ) {
                     nodes {
                       name
+                      owner { login }
                       defaultBranchRef {
                         target {
                           ... on Commit {
                             history(first:100, author:{id:$userId}) {
                               nodes { committedDate }
+                              totalCount
                             }
                           }
                         }
@@ -54,85 +61,71 @@ jobs:
                 }
               }
             `, { login: username, userId });
-            
-            // 3️⃣ processar commits normalmente
-            let allDates = [];
-            reposResult.user.repositories.nodes.forEach(repo => {
-              if(repo.defaultBranchRef?.target?.history?.nodes){
-                repo.defaultBranchRef.target.history.nodes.forEach(c=>{
-                  allDates.push(new Date(c.committedDate).toISOString().slice(0,10));
+
+            const repos = reposData.user.repositoriesContributedTo.nodes;
+
+            // Pegar todas as datas de commits
+            let commitDates = [];
+            repos.forEach(r => {
+              if(r.defaultBranchRef && r.defaultBranchRef.target.history.nodes) {
+                r.defaultBranchRef.target.history.nodes.forEach(c => {
+                  commitDates.push(new Date(c.committedDate).toISOString().slice(0,10));
                 });
               }
             });
-            
-            allDates = Array.from(new Set(allDates)).sort();
-            
-            const totalCommits = allDates.length;
-            
-            // calcular streaks
-            let maxStreak = 0;
-            let currentStreak = 0;
-            let lastDate = null;
-            const today = new Date().toISOString().slice(0,10);
-            
-            allDates.forEach(d=>{
-              if(!lastDate) { currentStreak=1; }
-              else {
-                const prev = new Date(lastDate);
-                const curr = new Date(d);
-                const diff = (curr-prev)/(1000*60*60*24);
-                if(diff===1) currentStreak++;
-                else currentStreak=1;
-              }
-              if(currentStreak>maxStreak) maxStreak=currentStreak;
-              lastDate = d;
-            });
-            
-            // verificar streak atual
-            if(lastDate!==today){
-              const diff = (new Date(today)-new Date(lastDate))/(1000*60*60*24);
-              if(diff>1) currentStreak=0;
+
+            if(commitDates.length === 0){
+              console.log("Nenhum commit encontrado. SVG não será gerado.");
+              return;
             }
-            
-            // gerar SVG (Dracula theme)
-            const width = 600, height = 180;
-            const gradientStart = "#bd93f9";
-            const gradientEnd = "#ff79c6";
-            const bg = "#282a36";
-            const fg = "#f8f8f2";
-            
+
+            // ordenar por data
+            commitDates.sort();
+
+            // calcular total commits
+            const totalCommits = commitDates.length;
+
+            // calcular streaks
+            let maxStreak = 1, currentStreak = 1;
+            for(let i=1; i<commitDates.length; i++){
+              const prev = new Date(commitDates[i-1]);
+              const curr = new Date(commitDates[i]);
+              const diffDays = (curr-prev)/(1000*60*60*24);
+              if(diffDays === 1){
+                currentStreak += 1;
+              } else if(diffDays > 1){
+                if(currentStreak > maxStreak) maxStreak = currentStreak;
+                currentStreak = 1;
+              }
+            }
+            if(currentStreak > maxStreak) maxStreak = currentStreak;
+
+            const firstCommit = commitDates[0];
+
+            // cores e estilo Dracula
+            const bg = "#282a36", fg = "#f8f8f2", accent = "#bd93f9";
+
             const svg = `
-            <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-              <style>
-                text { font-family: 'JetBrains Mono', monospace; }
-                .title { font-size: 20px; fill: ${fg}; font-weight: bold; }
-                .label { font-size: 14px; fill: #8be9fd; }
-                .value { font-size: 18px; fill: #f1fa8c; font-weight: bold; }
-                .bar-bg { fill: #44475a; rx:6; ry:6; }
-              </style>
-            
-              <rect width="100%" height="100%" rx="18" fill="${bg}"/>
-              <text x="30" y="40" class="title">📊 GitHub Stats</text>
-              <text x="30" y="80" class="label">🧾 Total Commits</text>
-              <text x="200" y="80" class="value">${totalCommits}</text>
-            
-              <rect x="30" y="90" width="540" height="12" class="bar-bg"/>
-              <defs>
-                <linearGradient id="gradTotal" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="${gradientStart}"/>
-                  <stop offset="100%" stop-color="${gradientEnd}"/>
-                </linearGradient>
-              </defs>
-              <rect x="30" y="90" width="${Math.min(totalCommits,100)*5.4}" height="12" fill="url(#gradTotal)" rx="6" ry="6"/>
-            
-              <text x="30" y="130" class="label">🔥 Current Streak</text>
-              <text x="200" y="130" class="value">${currentStreak} days</text>
-            
-              <text x="30" y="160" class="label">🏆 Longest Streak</text>
-              <text x="200" y="160" class="value">${maxStreak} days</text>
-            </svg>
-            `;
-            
+              <svg width="600" height="180" xmlns="http://www.w3.org/2000/svg">
+                <style>
+                  text{font-family:JetBrains Mono, monospace}
+                  .title{font-size:20px;fill:${fg};font-weight:700}
+                  .label{font-size:14px;fill:${accent}}
+                  .value{font-size:24px;fill:${fg};font-weight:600}
+                </style>
+                <rect width="100%" height="100%" fill="${bg}" rx="16"/>
+                <text x="30" y="40" class="title">GitHub Streak & Commits</text>
+                <text x="30" y="80" class="label">First commit:</text>
+                <text x="200" y="80" class="value">${firstCommit}</text>
+                <text x="30" y="110" class="label">Total commits:</text>
+                <text x="200" y="110" class="value">${totalCommits}</text>
+                <text x="30" y="140" class="label">Current streak:</text>
+                <text x="200" y="140" class="value">${currentStreak} days</text>
+                <text x="30" y="170" class="label">Max streak:</text>
+                <text x="200" y="170" class="value">${maxStreak} days</text>
+              </svg>
+                          `;
+
             fs.writeFileSync(`${pathDir}/streak.svg`, svg);
             console.log("SVG de streak gerado com sucesso em 'generated/streak.svg'!");
             
