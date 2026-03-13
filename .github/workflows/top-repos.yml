@@ -15,21 +15,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate repo SVG cards
+      - name: Generate cached top repos SVG cards
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.METRICS_TOKEN }}
           script: |
             const fs = require("fs");
+            const path = "generated";
+            const cacheFile = path + "/cache.json";
+            fs.mkdirSync(path, { recursive: true });
 
             const username = "MikiDevAHM";
+            const EXCLUDED = ["dotfiles", "test-repo"];
 
-            // repos que NÃO devem aparecer
-            const EXCLUDED = [
-              "dotfiles",
-              "test-repo"
-            ];
+            // check cache
+            let cache = {};
+            if(fs.existsSync(cacheFile)){
+              cache = JSON.parse(fs.readFileSync(cacheFile,"utf8"));
+            }
 
+            // pegar id global do usuário
+            const viewer = await github.graphql(`
+            query($login:String!) { user(login:$login) { id } }`, {login: username});
+            const userId = viewer.user.id;
+
+            // buscar repos contribuídos
             const query = await github.graphql(`
             query($login:String!) {
               user(login:$login) {
@@ -41,83 +51,119 @@ jobs:
                   nodes {
                     name
                     stargazerCount
-                    owner { login avatarUrl }
+                    owner { login avatarUrl url }
                     defaultBranchRef {
                       target {
                         ... on Commit {
-                          history(author:{id:""}) {
-                            totalCount
-                          }
+                          history(first:0, author:{id:$userId}) { totalCount }
                         }
                       }
                     }
                   }
                 }
               }
-            }`, { login: username });
+            }`, {login: username, userId});
 
             let repos = query.user.repositoriesContributedTo.nodes
-              .filter(r => !EXCLUDED.includes(r.name))
-              .slice(0,5);
+              .filter(r=>r.defaultBranchRef)
+              .filter(r=>!EXCLUDED.includes(r.name))
+              .map(r=>({
+                name: r.name,
+                owner: r.owner.login,
+                avatar: r.owner.avatarUrl,
+                stars: r.stargazerCount,
+                commits: r.defaultBranchRef.target.history.totalCount,
+                url: r.owner.url + "/" + r.name
+              }))
+              .filter(r=>r.commits>0);
 
-            fs.mkdirSync("generated", { recursive: true });
+            // ordenar por commits
+            repos.sort((a,b)=>b.commits-a.commits);
+            repos = repos.slice(0,5);
 
-            const maxStars = Math.max(...repos.map(r => r.stargazerCount), 1);
+            // salvar cache
+            fs.writeFileSync(cacheFile, JSON.stringify(repos));
 
-            repos.forEach((repo, i) => {
-              const stars = repo.stargazerCount;
-              const commits = repo.defaultBranchRef?.target?.history?.totalCount || 0;
+            const maxCommits = Math.max(...repos.map(r=>r.commits),1);
 
-              const barWidth = Math.round((stars / maxStars) * 420);
+            // cores gradiente Dracula
+            const gradientStart = "#bd93f9";
+            const gradientEnd = "#ff79c6";
+
+            repos.forEach((repo,i)=>{
+              const barWidth = Math.round((repo.commits/maxCommits)*520);
+
+              // ranking medal
+              const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
 
               const svg = `
-              <svg width="520" height="110" xmlns="http://www.w3.org/2000/svg">
-                <style>
-                  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
-                  text { font-family: 'JetBrains Mono', monospace; }
-                </style>
+<svg width="650" height="130" xmlns="http://www.w3.org/2000/svg">
 
-                <rect width="100%" height="100%" rx="14" fill="#282a36"/>
+<style>
+text{font-family:JetBrains Mono, monospace}
+</style>
 
-                <!-- repo icon -->
-                <circle cx="40" cy="40" r="20" fill="#44475a"/>
-                <text x="40" y="45" text-anchor="middle" fill="#bd93f9" font-size="18">📦</text>
+<a href="${repo.url}">
 
-                <!-- repo name -->
-                <text x="80" y="35" fill="#f8f8f2" font-size="16" font-weight="600">
-                  ${repo.owner.login}/${repo.name}
-                </text>
+<rect width="100%" height="100%" rx="18" fill="#282a36"/>
 
-                <!-- stars -->
-                <text x="80" y="60" fill="#f1fa8c" font-size="13">
-                  ⭐ ${stars}
-                </text>
+<image href="${repo.avatar}" x="25" y="30" width="40" height="40"/>
 
-                <!-- commits -->
-                <text x="160" y="60" fill="#8be9fd" font-size="13">
-                  🧾 ${commits} commits
-                </text>
+<text x="80" y="45" fill="#f8f8f2" font-size="18" font-weight="600">
+${medal} ${repo.owner}/${repo.name}
+</text>
 
-                <!-- background bar -->
-                <rect x="80" y="75" width="420" height="10" rx="6" fill="#44475a"/>
+<text x="80" y="70" fill="#8be9fd" font-size="14">
+🧾 ${repo.commits} commits
+</text>
 
-                <!-- progress -->
-                <rect x="80" y="75" width="${barWidth}" height="10" rx="6" fill="#bd93f9"/>
+<text x="200" y="70" fill="#f1fa8c" font-size="14">
+⭐ ${repo.stars}
+</text>
 
-                <!-- counter -->
-                <text x="505" y="85" text-anchor="end" fill="#f8f8f2" font-size="11">
-                  ${stars}/${maxStars}
-                </text>
-              </svg>
-              `;
+<!-- background bar -->
+<rect x="80" y="85" width="520" height="12" rx="6" fill="#44475a"/>
 
-              fs.writeFileSync(`generated/repo-${i+1}.svg`, svg);
+<!-- gradient bar -->
+<defs>
+<linearGradient id="grad${i}" x1="0%" y1="0%" x2="100%" y2="0%">
+  <stop offset="0%" stop-color="${gradientStart}"/>
+  <stop offset="100%" stop-color="${gradientEnd}"/>
+</linearGradient>
+</defs>
+<rect x="80" y="85" width="${barWidth}" height="12" rx="6" fill="url(#grad${i})"/>
+
+<!-- counter -->
+<text x="610" y="96" fill="#f8f8f2" font-size="12">
+${repo.commits}/${maxCommits}
+</text>
+
+</a>
+
+</svg>
+`;
+
+              fs.writeFileSync(`${path}/repo-${i+1}.svg`,svg);
             });
 
-      - name: Commit cards
-        run: |
-          git config user.name github-actions
-          git config user.email actions@github.com
-          git add generated/*.svg
-          git commit -m "update repo cards" || exit 0
-          git push
+            // gerar GRID
+            const cardWidth = 650;
+            const cardHeight = 130;
+            const gap = 20;
+            const gridCols = 2;
+            const gridRows = Math.ceil(repos.length/gridCols);
+            const gridWidth = cardWidth*gridCols + gap*(gridCols-1);
+            const gridHeight = cardHeight*gridRows + gap*(gridRows-1);
+
+            let gridSvg = `<svg width="${gridWidth}" height="${gridHeight}" xmlns="http://www.w3.org/2000/svg">`;
+
+            repos.forEach((r,i)=>{
+              const col = i % gridCols;
+              const row = Math.floor(i/gridCols);
+              const x = col*(cardWidth+gap);
+              const y = row*(cardHeight+gap);
+              gridSvg += `<image href="repo-${i+1}.svg" x="${x}" y="${y}" width="${cardWidth}" height="${cardHeight}"/>`;
+            });
+
+            gridSvg += "</svg>";
+            fs.writeFileSync(`${path}/grid.svg`,gridSvg);
