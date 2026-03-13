@@ -104,27 +104,38 @@ jobs:
 
             // cores e estilo Dracula
             const bg = "#282a36", fg = "#f8f8f2", accent = "#bd93f9";
-
-            const svg = `
-              <svg width="600" height="180" xmlns="http://www.w3.org/2000/svg">
-                <style>
-                  text{font-family:JetBrains Mono, monospace}
-                  .title{font-size:20px;fill:${fg};font-weight:700}
-                  .label{font-size:14px;fill:${accent}}
-                  .value{font-size:24px;fill:${fg};font-weight:600}
-                </style>
-                <rect width="100%" height="100%" fill="${bg}" rx="16"/>
-                <text x="30" y="40" class="title">GitHub Streak & Commits</text>
-                <text x="30" y="80" class="label">First commit:</text>
-                <text x="200" y="80" class="value">${firstCommit}</text>
-                <text x="30" y="110" class="label">Total commits:</text>
-                <text x="200" y="110" class="value">${totalCommits}</text>
-                <text x="30" y="140" class="label">Current streak:</text>
-                <text x="200" y="140" class="value">${currentStreak} days</text>
-                <text x="30" y="170" class="label">Max streak:</text>
-                <text x="200" y="170" class="value">${maxStreak} days</text>
-              </svg>
-                          `;
+            
+            const svg = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+            <svg width="600" height="180" xmlns="http://www.w3.org/2000/svg">
+              <style>
+                text { font-family: "JetBrains Mono", monospace; }
+                .title { font-size: 20px; fill: ${fg}; font-weight: 700; }
+                .label { font-size: 14px; fill: ${accent}; }
+                .value { font-size: 24px; fill: ${fg}; font-weight: 600; }
+              </style>
+            
+              <!-- background -->
+              <rect width="100%" height="100%" fill="${bg}" rx="16"/>
+            
+              <!-- title -->
+              <text x="30" y="40" class="title">GitHub Streak & Commits</text>
+            
+              <!-- first commit -->
+              <text x="30" y="80" class="label">First commit:</text>
+              <text x="200" y="80" class="value">${firstCommit}</text>
+            
+              <!-- total commits -->
+              <text x="30" y="110" class="label">Total commits:</text>
+              <text x="200" y="110" class="value">${totalCommits}</text>
+            
+              <!-- current streak -->
+              <text x="30" y="140" class="label">Current streak:</text>
+              <text x="200" y="140" class="value">${currentStreak} days</text>
+            
+              <!-- max streak -->
+              <text x="30" y="170" class="label">Max streak:</text>
+              <text x="200" y="170" class="value">${maxStreak} days</text>
+            </svg>`;
 
             fs.writeFileSync(`${pathDir}/streak.svg`, svg);
             console.log("SVG de streak gerado com sucesso em 'generated/streak.svg'!");
