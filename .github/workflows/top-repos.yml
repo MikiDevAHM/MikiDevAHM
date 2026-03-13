@@ -41,7 +41,7 @@ jobs:
 
             // buscar repos contribuídos
             const query = await github.graphql(`
-            query($login:String!) {
+            query($login:String!, $userId:ID!) {
               user(login:$login) {
                 repositoriesContributedTo(
                   first:100
