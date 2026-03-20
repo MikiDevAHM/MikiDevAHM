@@ -20,8 +20,9 @@ jobs:
         with:
           github-token: ${{ secrets.METRICS_TOKEN }}
           script: |
-            const fs   = require("fs");
+            const fs    = require("fs");
             const https = require("https");
+
             const pathDir   = "generated";
             const cacheFile = pathDir + "/cache.json";
             fs.mkdirSync(pathDir, { recursive: true });
@@ -30,9 +31,7 @@ jobs:
             const EXCLUDED = ["dotfiles", "test-repo"];
             const TOP_N    = 5;
 
-            // --- Helpers ---
-
-            /** Baixa uma imagem e devolve base64 (para embutir no SVG) */
+            // --- Helper: baixar imagem como base64 ---
             function fetchImageBase64(url) {
               return new Promise((resolve) => {
                 https.get(url, (res) => {
@@ -65,7 +64,6 @@ jobs:
                     ) {
                       nodes {
                         name
-                        nameWithOwner
                         url
                         stargazerCount
                         owner { login avatarUrl }
@@ -91,7 +89,7 @@ jobs:
                   avatar:  r.owner.avatarUrl,
                   stars:   r.stargazerCount,
                   commits: r.defaultBranchRef.target.history.totalCount,
-                  url:     r.url,   // URL correta do repo via campo nativo
+                  url:     r.url,
                 }))
                 .filter(r => r.commits > 0)
                 .sort((a, b) => b.commits - a.commits)
@@ -100,7 +98,6 @@ jobs:
               if (repos.length === 0) {
                 console.log("⚠️  Nenhum repo com commits encontrado.");
               } else {
-                // Salva cache para fallback futuro
                 fs.writeFileSync(cacheFile, JSON.stringify(repos, null, 2));
                 console.log(`✅ ${repos.length} repos encontrados, cache salvo.`);
               }
@@ -108,7 +105,7 @@ jobs:
               console.error("❌ Erro na query GraphQL:", err.message);
             }
 
-            // --- Fallback para cache se a query falhou ou retornou vazio ---
+            // --- Fallback para cache ---
             if (repos.length === 0 && fs.existsSync(cacheFile)) {
               repos = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
               console.log(`♻️  Usando cache com ${repos.length} repos.`);
@@ -119,71 +116,95 @@ jobs:
               return;
             }
 
-            // --- Baixar avatares como base64 para evitar problemas de CORS/CSP ---
+            // --- Baixar avatares como base64 ---
             console.log("Baixando avatares...");
             const avatarCache = {};
             for (const repo of repos) {
               if (!avatarCache[repo.avatar]) {
-                // Redimensiona para 48px via query string do GitHub
                 const smallUrl = repo.avatar.replace(/\?.*$/, "") + "?size=48";
                 avatarCache[repo.avatar] = await fetchImageBase64(smallUrl);
               }
             }
 
-            // --- Gerar SVGs ---
-            const maxCommits    = Math.max(...repos.map(r => r.commits), 1);
-            const cardWidth     = 720;
-            const cardHeight    = 130;
-            const barTrackX     = 90;
-            const barTrackW     = 520;
-            const gradStart     = "#bd93f9";
-            const gradEnd       = "#ff79c6";
-            const bg            = "#282a36";
-            const fgPrimary     = "#f8f8f2";
-            const fgBlue        = "#8be9fd";
-            const fgYellow      = "#f1fa8c";
-            const trackColor    = "#44475a";
-            const medals        = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
+            // --- Constantes de layout e paleta Dracula ---
+            const maxCommits  = Math.max(...repos.map(r => r.commits), 1);
+            const medals      = ["🥇", "🥈", "🥉", "4th", "5th"];
 
+            const BG_TOP      = "#2d2f45";
+            const BG_BOT      = "#262837";
+            const GRAD_START  = "#bd93f9";
+            const GRAD_END    = "#ff79c6";
+            const FG_PRIMARY  = "#f8f8f2";
+            const FG_BLUE     = "#8be9fd";
+            const FG_YELLOW   = "#f1fa8c";
+            const FG_MUTED    = "#6272a4";
+            const TRACK_COLOR = "#363847";
+            const CARD_W      = 720;
+            const CARD_H      = 110;
+            const AV_CX       = 46;
+            const AV_CY       = 55;
+            const AV_R        = 22;
+            const CONTENT_X   = 85;
+            const BAR_X       = 85;
+            const BAR_W       = 520;
+            const BAR_Y       = 74;
+            const BAR_H       = 12;
+
+            // --- Gerar SVGs ---
             repos.forEach((repo, i) => {
-              const barW      = Math.round((repo.commits / maxCommits) * barTrackW);
+              const barFill   = Math.round((repo.commits / maxCommits) * BAR_W);
+              const pct       = Math.round((repo.commits / maxCommits) * 100);
               const medal     = medals[i] ?? "";
               const avatarB64 = avatarCache[repo.avatar] ?? null;
-              const pct       = Math.round((repo.commits / maxCommits) * 100);
+              const initial   = (repo.owner[0] ?? "?").toUpperCase();
+              const starsStr  = repo.stars >= 1000
+                ? (repo.stars / 1000).toFixed(1) + "k"
+                : String(repo.stars);
 
               const avatarEl = avatarB64
-                ? `<image href="${avatarB64}" x="20" y="30" width="44" height="44" clip-path="url(#avatarClip${i})"/>`
-                : `<rect x="20" y="30" width="44" height="44" rx="22" fill="#6272a4"/>`;
-
-              const svg = `<svg width="${cardWidth}" height="${cardHeight}" viewBox="0 0 ${cardWidth} ${cardHeight}" xmlns="http://www.w3.org/2000/svg">
+                ? `<defs><clipPath id="av${i}"><circle cx="${AV_CX}" cy="${AV_CY}" r="${AV_R}"/></clipPath></defs>
+                <image href="${avatarB64}" x="${AV_CX - AV_R}" y="${AV_CY - AV_R}" width="${AV_R * 2}" height="${AV_R * 2}" clip-path="url(#av${i})"/>`
+                              : `<circle cx="${AV_CX}" cy="${AV_CY}" r="${AV_R}" fill="#44475a"/>
+                <text x="${AV_CX}" y="${AV_CY + 5}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="${GRAD_START}">${initial}</text>`;
+              
+                            const svg = `<svg width="${CARD_W}" height="${CARD_H}" viewBox="0 0 ${CARD_W} ${CARD_H}" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <linearGradient id="bar${i}" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%"   stop-color="${gradStart}"/>
-                    <stop offset="100%" stop-color="${gradEnd}"/>
+                  <linearGradient id="bgGrad${i}" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="${BG_TOP}"/>
+                    <stop offset="100%" stop-color="${BG_BOT}"/>
                   </linearGradient>
-                  <clipPath id="avatarClip${i}">
-                    <circle cx="42" cy="52" r="22"/>
-                  </clipPath>
+                  <linearGradient id="barGrad${i}" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="${GRAD_START}"/>
+                    <stop offset="100%" stop-color="${GRAD_END}"/>
+                  </linearGradient>
+                  <linearGradient id="glowGrad${i}" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="${GRAD_START}" stop-opacity="0.18"/>
+                    <stop offset="100%" stop-color="${GRAD_END}"  stop-opacity="0"/>
+                  </linearGradient>
                 </defs>
                 <style>text { font-family: "JetBrains Mono", "Fira Code", monospace; }</style>
               
-                <rect width="100%" height="100%" rx="16" fill="${bg}"/>
+                <rect width="${CARD_W}" height="${CARD_H}" rx="16" fill="url(#bgGrad${i})"/>
+                <rect x="0" y="0" width="4" height="${CARD_H}" rx="2" fill="url(#barGrad${i})"/>
+                <rect x="${BAR_X}" y="${BAR_Y - 6}" width="${BAR_W}" height="${BAR_H + 12}" rx="8" fill="url(#glowGrad${i})"/>
               
                 ${avatarEl}
               
-                <text x="${barTrackX}" y="50" fill="${fgPrimary}" font-size="17" font-weight="600">${medal} ${repo.owner}/${repo.name}</text>
-                <text x="${barTrackX}" y="74" fill="${fgBlue}"    font-size="13">🧾 ${repo.commits.toLocaleString()} commits</text>
-                <text x="290"          y="74" fill="${fgYellow}"  font-size="13">⭐ ${repo.stars.toLocaleString()}</text>
-                <text x="400"          y="74" fill="#6272a4"      font-size="13">${pct}% of top</text>
+                <text x="${CONTENT_X}" y="32" font-size="15" font-weight="700" fill="${FG_PRIMARY}">${medal} ${repo.owner}/${repo.name}</text>
+                <text x="${CONTENT_X}" y="56" font-size="12" fill="${FG_BLUE}">◆ ${repo.commits.toLocaleString()} commits</text>
+                <text x="230" y="56" font-size="12" fill="${FG_YELLOW}">★ ${starsStr}</text>
+                <circle cx="284" cy="51" r="2" fill="${FG_MUTED}"/>
+                <text x="295" y="56" font-size="12" fill="${FG_MUTED}">${pct}% of top</text>
               
-                <rect x="${barTrackX}" y="88" width="${barTrackW}" height="14" rx="7" fill="${trackColor}"/>
-                <rect x="${barTrackX}" y="88" width="${barW}"      height="14" rx="7" fill="url(#bar${i})"/>
+                <rect x="${BAR_X}" y="${BAR_Y}" width="${BAR_W}" height="${BAR_H}" rx="6" fill="${TRACK_COLOR}"/>
+                <rect x="${BAR_X}" y="${BAR_Y}" width="${barFill}" height="${BAR_H}" rx="6" fill="url(#barGrad${i})"/>
+                <rect x="${BAR_X}" y="${BAR_Y}" width="${barFill}" height="${Math.floor(BAR_H / 2)}" rx="6" fill="white" opacity="0.07"/>
               </svg>`;
-              
-                            const outPath = `${pathDir}/repo-${i + 1}.svg`;
-                            fs.writeFileSync(outPath, svg.trim());
-                            console.log(`✅ ${outPath} — ${repo.owner}/${repo.name} (${repo.commits} commits)`);
-                          });
+
+              const outPath = `${pathDir}/repo-${i + 1}.svg`;
+              fs.writeFileSync(outPath, svg.trim());
+              console.log(`✅ ${outPath} — ${repo.owner}/${repo.name} (${repo.commits} commits, ${pct}%)`);
+            });
 
       - name: Commit generated SVGs
         run: |
