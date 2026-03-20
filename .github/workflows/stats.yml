@@ -25,7 +25,6 @@ jobs:
 
             const username = "MikiDevAHM";
 
-            // pegar informações do usuário
             const userQuery = await github.graphql(`
               query($login: String!) {
                 user(login: $login) {
@@ -49,65 +48,97 @@ jobs:
             const joinedAt = user.createdAt.split("T")[0];
             const totalCommits = user.contributionsCollection.contributionCalendar.totalContributions;
 
-            // calcular streaks
-            let currentStreak = 0;
-            let maxStreak = 0;
-            let tempStreak = 0;
-
+            // Flatten e ordenar dias cronologicamente
             const days = [];
             user.contributionsCollection.contributionCalendar.weeks.forEach(week => {
               week.contributionDays.forEach(day => {
                 days.push({ date: day.date, count: day.contributionCount });
               });
             });
+            days.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-            days.sort((a,b) => new Date(a.date) - new Date(b.date));
-
-            days.forEach(day => {
-              if(day.count > 0){
+            // --- Max streak ---
+            let maxStreak = 0;
+            let tempStreak = 0;
+            for (const day of days) {
+              if (day.count > 0) {
                 tempStreak++;
-                if(tempStreak > maxStreak) maxStreak = tempStreak;
+                if (tempStreak > maxStreak) maxStreak = tempStreak;
               } else {
                 tempStreak = 0;
               }
-            });
+            }
 
-            // current streak (último dia com contribuição até hoje)
+            // --- Current streak ---
+            // Percorre do dia mais recente para o mais antigo.
+            // Se o dia mais recente (hoje) ainda não tiver contribuição,
+            // permitimos isso (o dia pode ainda não ter terminado),
+            // então começamos a contar a partir do penúltimo dia.
+            let currentStreak = 0;
             const today = new Date().toISOString().split("T")[0];
-            const lastDay = days[days.length-1];
-            currentStreak = lastDay.count > 0 ? tempStreak : 0;
+            const reversed = [...days].reverse();
 
-            const bg = "#282a36";
-            const fg = "#f8f8f2";
-            const accent = "#bd93f9";
+            // Pula o dia de hoje se ainda não tiver contribuição
+            // (pode ainda não ter terminado)
+            let startIdx = 0;
+            if (reversed[0]?.date === today && reversed[0]?.count === 0) {
+              startIdx = 1;
+            }
 
-            const svg = `
-              <svg width="600" height="180" xmlns="http://www.w3.org/2000/svg">
-                <style>
-                  text { font-family: "JetBrains Mono", monospace; }
-                  .title { font-size: 20px; fill: ${fg}; font-weight: 700; }
-                  .label { font-size: 14px; fill: ${accent}; }
-                  .value { font-size: 24px; fill: ${fg}; font-weight: 600; }
-                </style>
-                <rect width="100%" height="100%" fill="${bg}" rx="16"/>
-                <text x="30" y="40" class="title">GitHub Streaks</text>
-                <text x="30" y="80" class="label">Joined at:</text>
-                <text x="200" y="80" class="value">${joinedAt}</text>
-                <text x="30" y="110" class="label">Total commits:</text>
-                <text x="200" y="110" class="value">${totalCommits}</text>
-                <text x="30" y="140" class="label">Current streak:</text>
-                <text x="200" y="140" class="value">${currentStreak} days</text>
-                <text x="30" y="170" class="label">Max streak:</text>
-                <text x="200" y="170" class="value">${maxStreak} days</text>
-              </svg>`;
+            for (let i = startIdx; i < reversed.length; i++) {
+              if (reversed[i].count > 0) {
+                currentStreak++;
+              } else {
+                break;
+              }
+            }
 
-            fs.writeFileSync(`${pathDir}/streak.svg`, svg);
-            console.log("SVG de streak gerado com sucesso em 'generated/streak.svg'!");
+            // --- SVG ---
+            const bg      = "#282a36";
+            const fg      = "#f8f8f2";
+            const accent  = "#bd93f9";
+            const accent2 = "#ff79c6";
+            const green   = "#50fa7b";
+
+            const svg = `<svg width="600" height="200" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="${accent}"/>
+                  <stop offset="100%" stop-color="${accent2}"/>
+                </linearGradient>
+              </defs>
+              <style>
+                text { font-family: "JetBrains Mono", "Fira Code", monospace; }
+                .title  { font-size: 18px; font-weight: 700; fill: url(#titleGrad); }
+                .label  { font-size: 13px; fill: ${accent}; }
+                .value  { font-size: 22px; font-weight: 600; fill: ${fg}; }
+                .streak { font-size: 22px; font-weight: 600; fill: ${green}; }
+              </style>
+              <rect width="100%" height="100%" fill="${bg}" rx="16"/>
+              <rect x="0" y="0" width="4" height="200" rx="2" fill="url(#titleGrad)"/>
             
+              <text x="24" y="38" class="title">⚡ GitHub Streaks — ${username}</text>
+            
+              <text x="24"  y="80"  class="label">Joined at</text>
+              <text x="200" y="80"  class="value">${joinedAt}</text>
+            
+              <text x="24"  y="112" class="label">Total commits</text>
+              <text x="200" y="112" class="value">${totalCommits.toLocaleString()}</text>
+            
+              <text x="24"  y="144" class="label">Current streak</text>
+              <text x="200" y="144" class="streak">${currentStreak} days 🔥</text>
+            
+              <text x="24"  y="176" class="label">Longest streak</text>
+              <text x="200" y="176" class="streak">${maxStreak} days 🏆</text>
+            </svg>`;
+            
+                fs.writeFileSync(`${pathDir}/streak.svg`, svg.trim());
+                console.log(`✅ streak.svg gerado! current=${currentStreak} max=${maxStreak} total=${totalCommits}`);
+
       - name: Commit SVG
         run: |
-            git config user.name "github-actions"
-            git config user.email "github-actions@github.com"
-            git add generated/streak.svg
-            git commit -m "Atualiza streak SVG"
-            git push
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add generated/streak.svg
+          git diff --cached --quiet || git commit -m "chore: update streak SVG [skip ci]"
+          git push
