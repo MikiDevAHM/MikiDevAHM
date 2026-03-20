@@ -15,124 +15,180 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate cached top repos SVG cards
+      - name: Generate top repos SVG cards
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.METRICS_TOKEN }}
           script: |
-            const fs = require("fs");
-            const pathDir = "generated";
+            const fs   = require("fs");
+            const https = require("https");
+            const pathDir   = "generated";
             const cacheFile = pathDir + "/cache.json";
             fs.mkdirSync(pathDir, { recursive: true });
 
             const username = "MikiDevAHM";
             const EXCLUDED = ["dotfiles", "test-repo"];
+            const TOP_N    = 5;
 
-            // pegar id global do usuário
+            // --- Helpers ---
+
+            /** Baixa uma imagem e devolve base64 (para embutir no SVG) */
+            function fetchImageBase64(url) {
+              return new Promise((resolve) => {
+                https.get(url, (res) => {
+                  const chunks = [];
+                  res.on("data", c => chunks.push(c));
+                  res.on("end", () => {
+                    const mime = res.headers["content-type"] || "image/png";
+                    resolve(`data:${mime};base64,${Buffer.concat(chunks).toString("base64")}`);
+                  });
+                }).on("error", () => resolve(null));
+              });
+            }
+
+            // --- Buscar ID do usuário ---
             const viewer = await github.graphql(`
-              query($login:String!) { user(login:$login) { id } }
+              query($login: String!) { user(login: $login) { id } }
             `, { login: username });
             const userId = viewer.user.id;
 
-            // carregar cache
-            let cache = {};
-            if(fs.existsSync(cacheFile)){
-              cache = JSON.parse(fs.readFileSync(cacheFile,"utf8"));
-            }
-
-            // buscar repos contribuídos
-            const result = await github.graphql(`
-              query($login:String!, $userId:ID!) {
-                user(login:$login) {
-                  repositoriesContributedTo(
-                    first:100
-                    contributionTypes:[COMMIT,PULL_REQUEST]
-                    includeUserRepositories:true
-                  ) {
-                    nodes {
-                      name
-                      stargazerCount
-                      owner { login avatarUrl url }
-                      defaultBranchRef {
-                        target {
-                          ... on Commit {
-                            history(first:0, author:{id:$userId}) { totalCount }
+            // --- Buscar repos contribuídos ---
+            let repos = [];
+            try {
+              const result = await github.graphql(`
+                query($login: String!, $userId: ID!) {
+                  user(login: $login) {
+                    repositoriesContributedTo(
+                      first: 100
+                      contributionTypes: [COMMIT, PULL_REQUEST]
+                      includeUserRepositories: true
+                    ) {
+                      nodes {
+                        name
+                        nameWithOwner
+                        url
+                        stargazerCount
+                        owner { login avatarUrl }
+                        defaultBranchRef {
+                          target {
+                            ... on Commit {
+                              history(first: 0, author: { id: $userId }) { totalCount }
+                            }
                           }
                         }
                       }
                     }
                   }
                 }
-              }
-            `, { login: username, userId });
+              `, { login: username, userId });
 
-            let repos = result.user.repositoriesContributedTo.nodes
-              .filter(r => r.defaultBranchRef)
-              .filter(r => !EXCLUDED.includes(r.name))
-              .map(r => ({
-                name: r.name,
-                owner: r.owner.login,
-                avatar: r.owner.avatarUrl,
-                stars: r.stargazerCount,
-                commits: r.defaultBranchRef.target.history.totalCount,
-                url: r.owner.url + "/" + r.name
-              }))
-              .filter(r => r.commits > 0);
+              repos = result.user.repositoriesContributedTo.nodes
+                .filter(r => r.defaultBranchRef?.target?.history)
+                .filter(r => !EXCLUDED.includes(r.name))
+                .map(r => ({
+                  name:    r.name,
+                  owner:   r.owner.login,
+                  avatar:  r.owner.avatarUrl,
+                  stars:   r.stargazerCount,
+                  commits: r.defaultBranchRef.target.history.totalCount,
+                  url:     r.url,   // URL correta do repo via campo nativo
+                }))
+                .filter(r => r.commits > 0)
+                .sort((a, b) => b.commits - a.commits)
+                .slice(0, TOP_N);
+
+              if (repos.length === 0) {
+                console.log("⚠️  Nenhum repo com commits encontrado.");
+              } else {
+                // Salva cache para fallback futuro
+                fs.writeFileSync(cacheFile, JSON.stringify(repos, null, 2));
+                console.log(`✅ ${repos.length} repos encontrados, cache salvo.`);
+              }
+            } catch (err) {
+              console.error("❌ Erro na query GraphQL:", err.message);
+            }
+
+            // --- Fallback para cache se a query falhou ou retornou vazio ---
+            if (repos.length === 0 && fs.existsSync(cacheFile)) {
+              repos = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
+              console.log(`♻️  Usando cache com ${repos.length} repos.`);
+            }
 
             if (repos.length === 0) {
-              console.log("Nenhum repo com commits encontrados, workflow vai terminar sem gerar SVGs.");
+              console.log("Nada para gerar. Encerrando.");
               return;
             }
 
-            // ordenar por commits e pegar top 5
-            repos.sort((a,b) => b.commits - a.commits);
-            repos = repos.slice(0,5);
+            // --- Baixar avatares como base64 para evitar problemas de CORS/CSP ---
+            console.log("Baixando avatares...");
+            const avatarCache = {};
+            for (const repo of repos) {
+              if (!avatarCache[repo.avatar]) {
+                // Redimensiona para 48px via query string do GitHub
+                const smallUrl = repo.avatar.replace(/\?.*$/, "") + "?size=48";
+                avatarCache[repo.avatar] = await fetchImageBase64(smallUrl);
+              }
+            }
 
-            // salvar cache
-            fs.writeFileSync(cacheFile, JSON.stringify(repos));
+            // --- Gerar SVGs ---
+            const maxCommits    = Math.max(...repos.map(r => r.commits), 1);
+            const cardWidth     = 720;
+            const cardHeight    = 130;
+            const barTrackX     = 90;
+            const barTrackW     = 520;
+            const gradStart     = "#bd93f9";
+            const gradEnd       = "#ff79c6";
+            const bg            = "#282a36";
+            const fgPrimary     = "#f8f8f2";
+            const fgBlue        = "#8be9fd";
+            const fgYellow      = "#f1fa8c";
+            const trackColor    = "#44475a";
+            const medals        = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
 
-            const maxCommits = Math.max(...repos.map(r => r.commits),1);
-            const gradientStart = "#bd93f9";
-            const gradientEnd = "#ff79c6";
+            repos.forEach((repo, i) => {
+              const barW      = Math.round((repo.commits / maxCommits) * barTrackW);
+              const medal     = medals[i] ?? "";
+              const avatarB64 = avatarCache[repo.avatar] ?? null;
+              const pct       = Math.round((repo.commits / maxCommits) * 100);
 
-            const cardWidth = 720;
-            const cardHeight = 140;
+              const avatarEl = avatarB64
+                ? `<image href="${avatarB64}" x="20" y="30" width="44" height="44" clip-path="url(#avatarClip${i})"/>`
+                : `<rect x="20" y="30" width="44" height="44" rx="22" fill="#6272a4"/>`;
 
-            // gerar SVGs individuais
-            repos.forEach((repo,i)=>{
-              const barWidth = Math.round((repo.commits/maxCommits)*520);
-              const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
-
-              const svg = `
-                <svg width="${cardWidth}" height="${cardHeight}" xmlns="http://www.w3.org/2000/svg">
-                <style>text{font-family:JetBrains Mono, monospace}</style>
-                <a href="${repo.url}">
-                  <rect width="100%" height="100%" rx="18" fill="#282a36"/>
-                  <image href="${repo.avatar}" x="30" y="35" width="50" height="50"/>
-                  <text x="90" y="55" fill="#f8f8f2" font-size="20" font-weight="600">${medal} ${repo.owner}/${repo.name}</text>
-                  <text x="90" y="85" fill="#8be9fd" font-size="14">🧾 ${repo.commits} commits</text>
-                  <text x="250" y="85" fill="#f1fa8c" font-size="14">⭐ ${repo.stars}</text>
-                  <rect x="90" y="95" width="520" height="16" rx="8" fill="#44475a"/>
-                  <defs>
-                    <linearGradient id="grad${i}" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stop-color="${gradientStart}"/>
-                      <stop offset="100%" stop-color="${gradientEnd}"/>
-                    </linearGradient>
-                  </defs>
-                  <rect x="90" y="95" width="${barWidth}" height="16" rx="8" fill="url(#grad${i})"/>
-                  <text x="620" y="110" fill="#f8f8f2" font-size="12">${repo.commits}/${maxCommits}</text>
-                </a>
-                </svg>`;
-
-              fs.writeFileSync(`${pathDir}/repo-${i+1}.svg`, svg);
-            });
-
-            console.log("SVGs individuais gerados com sucesso na pasta 'generated/'!");
+              const svg = `<svg width="${cardWidth}" height="${cardHeight}" viewBox="0 0 ${cardWidth} ${cardHeight}" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="bar${i}" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%"   stop-color="${gradStart}"/>
+                    <stop offset="100%" stop-color="${gradEnd}"/>
+                  </linearGradient>
+                  <clipPath id="avatarClip${i}">
+                    <circle cx="42" cy="52" r="22"/>
+                  </clipPath>
+                </defs>
+                <style>text { font-family: "JetBrains Mono", "Fira Code", monospace; }</style>
+              
+                <rect width="100%" height="100%" rx="16" fill="${bg}"/>
+              
+                ${avatarEl}
+              
+                <text x="${barTrackX}" y="50" fill="${fgPrimary}" font-size="17" font-weight="600">${medal} ${repo.owner}/${repo.name}</text>
+                <text x="${barTrackX}" y="74" fill="${fgBlue}"    font-size="13">🧾 ${repo.commits.toLocaleString()} commits</text>
+                <text x="290"          y="74" fill="${fgYellow}"  font-size="13">⭐ ${repo.stars.toLocaleString()}</text>
+                <text x="400"          y="74" fill="#6272a4"      font-size="13">${pct}% of top</text>
+              
+                <rect x="${barTrackX}" y="88" width="${barTrackW}" height="14" rx="7" fill="${trackColor}"/>
+                <rect x="${barTrackX}" y="88" width="${barW}"      height="14" rx="7" fill="url(#bar${i})"/>
+              </svg>`;
+              
+                            const outPath = `${pathDir}/repo-${i + 1}.svg`;
+                            fs.writeFileSync(outPath, svg.trim());
+                            console.log(`✅ ${outPath} — ${repo.owner}/${repo.name} (${repo.commits} commits)`);
+                          });
 
       - name: Commit generated SVGs
         run: |
-          git config --local user.name "github-actions[bot]"
+          git config --local user.name  "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add generated/*.svg
-          git commit -m "Update top repos SVGs" || echo "Nothing to commit"
+          git add generated/
+          git diff --cached --quiet || git commit -m "chore: update top repos SVGs [skip ci]"
           git push
