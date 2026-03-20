@@ -1,20 +1,24 @@
-
-    <svg width="720" height="140" xmlns="http://www.w3.org/2000/svg">
-    <style>text{font-family:JetBrains Mono, monospace}</style>
-    <a href="https://github.com/MikiDevAHM/MikiDevAHM">
-      <rect width="100%" height="100%" rx="18" fill="#282a36"/>
-      <image href="https://avatars.githubusercontent.com/u/108591843?u=2c5c13539b1e464218b102407a7170f348e45e5e&v=4" x="30" y="35" width="50" height="50"/>
-      <text x="90" y="55" fill="#f8f8f2" font-size="20" font-weight="600"> MikiDevAHM/MikiDevAHM</text>
-      <text x="90" y="85" fill="#8be9fd" font-size="14">🧾 62 commits</text>
-      <text x="250" y="85" fill="#f1fa8c" font-size="14">⭐ 0</text>
-      <rect x="90" y="95" width="520" height="16" rx="8" fill="#44475a"/>
-      <defs>
-        <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#bd93f9"/>
-          <stop offset="100%" stop-color="#ff79c6"/>
-        </linearGradient>
-      </defs>
-      <rect x="90" y="95" width="296" height="16" rx="8" fill="url(#grad4)"/>
-      <text x="620" y="110" fill="#f8f8f2" font-size="12">62/109</text>
-    </a>
-    </svg>
+<svg width="720" height="130" viewBox="0 0 720 130" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bar4" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%"   stop-color="#bd93f9"/>
+        <stop offset="100%" stop-color="#ff79c6"/>
+      </linearGradient>
+      <clipPath id="avatarClip4">
+        <circle cx="42" cy="52" r="22"/>
+      </clipPath>
+    </defs>
+    <style>text { font-family: "JetBrains Mono", "Fira Code", monospace; }</style>
+  
+    <rect width="100%" height="100%" rx="16" fill="#282a36"/>
+  
+    <image href="data:image/jpeg;base64,/9j/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBCQkJDAsMGA0NGDIhHCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMv/AABEIADAAMAMBIgACEQEDEQH/xAGiAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgsQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+gEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoLEQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APn+lCsRkA4HehRk4rrPC/h+11K4b7ZdtFHH8zRqhOR/n0rKrVjSjzSN6GHlWlyxOVCGkKGuo1TQFtjK8IYJGfl3AjevZv5/lWXZ6dLf3sNpAuZJXCL7Z71EcRGUeZbHVPATg7NGe9rKkCzEZQnGR2PvUNdT4n0o6RDa2pn38NyFI3+5HauWIxV0antI8yObEUfZT5SSMV2vgDK655hYYWNiQT14ri4zzXY+BA764wj5fyHwCOCeBiufG/wZHbl9udHWeILSbV9Kju7EeZFwZFRRuCE4Ix7H+Ypml6XpeiWMmsxtK823yod4wu5jjI9SPSq/gnVWe8utNumEZdMru45HDLj3XP5VF4y1S1m1Ky0y1ZltbYgsVGCzHHJA7/415KjNS9j0/Q9+Uotcw/4nwwy2dpchFEyzvET0JGB+fSvLHGDXrnxUtrqPSLGQ7Ut47l43QA5ZyMhs9+AR+deSOea9PLf4CPn8zt7V2EU4Nb2l+Jr/AEu1kgtGjjEi4LhBvH0brXP04MRXZUpxmrSVzio1pU3dGvaahNaXSXUUhEqNuDZ5zU9prc1jqX25Uhll3FiJo1cZ+hBrEElIZKzdGL3R1/XXbc29f8Vav4iYf2jeNIisWSJQFRT7KOPx61gk5NBOaStYQjBWirHDUqObuz//2Q==" x="20" y="30" width="44" height="44" clip-path="url(#avatarClip4)"/>
+  
+    <text x="90" y="50" fill="#f8f8f2" font-size="17" font-weight="600">5️⃣ MikiDevAHM/MikiDevAHM</text>
+    <text x="90" y="74" fill="#8be9fd"    font-size="13">🧾 64 commits</text>
+    <text x="290"          y="74" fill="#f1fa8c"  font-size="13">⭐ 0</text>
+    <text x="400"          y="74" fill="#6272a4"      font-size="13">59% of top</text>
+  
+    <rect x="90" y="88" width="520" height="14" rx="7" fill="#44475a"/>
+    <rect x="90" y="88" width="305"      height="14" rx="7" fill="url(#bar4)"/>
+  </svg>
