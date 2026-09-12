@@ -1,2 +1,2 @@
-[![Metrics](https://github.com/MikiDevAHM/MikiDevAHM/raw/master/github-metrics.svg)](/MikiDevAHM/MikiDevAHM/blob/master/github-metrics.svg)
-![Most used languages](https://github.com/MikiDevAHM/MikiDevAHM/raw/master/language-stats.svg)
+<p align="center"><img src="/github-metrics.svg" alt="Metrics" width="400"></p>
+<p align="center"><img src="/language-stats.svg" alt="Most used languages" width="400"></p>
