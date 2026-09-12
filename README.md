@@ -1,1 +1,2 @@
-<p align="center"><img src="/github-metrics.svg" alt="Metrics" width="400"></p>
+[![Metrics](https://github.com/MikiDevAHM/MikiDevAHM/raw/master/github-metrics.svg)](/MikiDevAHM/MikiDevAHM/blob/master/github-metrics.svg)
+![Most used languages](https://github.com/MikiDevAHM/MikiDevAHM/raw/master/language-stats.svg)
