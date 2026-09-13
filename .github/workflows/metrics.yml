@@ -62,6 +62,19 @@ jobs:
         with:
           node-version: 20
 
+      - name: Verificar se o token chegou
+        env:
+          GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::secrets.METRICS_TOKEN chegou vazio neste job."
+            echo "::error::Confira em Settings > Secrets and variables > Actions:"
+            echo "::error::1) o secret se chama exatamente METRICS_TOKEN"
+            echo "::error::2) ele está em 'Repository secrets', não dentro de um Environment"
+            echo "::error::   (se estiver num Environment, adicione 'environment: <nome>' neste job)"
+            exit 1
+          fi
+
       - name: Calcular ranking ponderado de linguagens
         env:
           GH_TOKEN: ${{ secrets.METRICS_TOKEN }}
