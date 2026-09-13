@@ -1,14 +1,13 @@
 # Visit https://github.com/lowlighter/metrics#-documentation for full reference
 name: Metrics
 on:
-  # Rodar 1x/dia em vez de 1x/hora: as estatísticas de linguagem/atividade
-  # não mudam o suficiente hora a hora pra justificar 24 execuções/dia.
-  # Ajuste o horário (UTC) como preferir.
+  # Run once a day instead of every hour: activity/language stats don't
+  # change enough hour to hour to justify 24 runs/day. Adjust the time
+  # (UTC) if you want.
   schedule: [{cron: "0 3 * * *"}]
   workflow_dispatch:
 
-# Se alguém disparar o workflow de novo antes do anterior terminar,
-# cancela o anterior em vez de rodar os dois em paralelo.
+# Cancel a previous in-progress run if a new one is triggered.
 concurrency:
   group: metrics
   cancel-in-progress: true
@@ -29,22 +28,14 @@ jobs:
           base: header, activity, community, repositories, metadata
           config_timezone: Europe/Vienna
 
-          # --- Languages (algoritmo padrão, rápido: sem clone) ---
-          # OBS: sem plugin_languages_indepth: yes, as opções abaixo NÃO
-          # tinham efeito nenhum no seu workflow original, mesmo estando
-          # configuradas: plugin_languages_analysis_timeout(_repositories),
-          # plugin_languages_categories, plugin_languages_recent_*.
-          # Elas só existem no modo indepth (que clona os repos e é bem
-          # mais lento). O ranking "de verdade" (bytes + nº de repos +
-          # bônus de uso recente, incluindo repos de org/contribuição)
-          # agora é calculado pelo job "language-stats" abaixo, sem clonar
-          # nada. Aqui deixamos só uma visão rápida e nativa como bônus.
-          plugin_languages: yes
-          plugin_languages_limit: 8   # 8 é o máximo permitido pelo plugin
-          plugin_languages_threshold: 0%
-          plugin_languages_colors: github
+          # plugin_languages is disabled here on purpose: the weighted
+          # ranking (bytes + repo count + recent-use bonus, including
+          # org/contributed repos) is now computed by the "language-stats"
+          # job below and rendered as its own SVG, styled to match this
+          # card. Keeping the native plugin too would just show two
+          # different, conflicting rankings.
 
-          # --- Lines (já era leve, mantido) ---
+          # --- Lines (already lightweight, kept as is) ---
           plugin_lines: yes
           plugin_lines_history_limit: 1
           plugin_lines_repositories_limit: 4
@@ -62,33 +53,34 @@ jobs:
         with:
           node-version: 20
 
-      - name: Verificar se o token chegou
+      - name: Check that the token is set
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
-            echo "::error::secrets.GH_TOKEN chegou vazio neste job."
-            echo "::error::Confira em Settings > Secrets and variables > Actions:"
-            echo "::error::1) o secret se chama exatamente GH_TOKEN"
-            echo "::error::2) ele está em 'Repository secrets', não dentro de um Environment"
-            echo "::error::   (se estiver num Environment, adicione 'environment: <nome>' neste job)"
+            echo "::error::secrets.GH_TOKEN came back empty in this job."
+            echo "::error::Check Settings > Secrets and variables > Actions:"
+            echo "::error::1) the secret is named exactly GH_TOKEN"
+            echo "::error::2) it's under 'Repository secrets', not inside an Environment"
+            echo "::error::   (if it's an Environment secret, add 'environment: <name>' to this job)"
             exit 1
           fi
 
-      - name: Calcular ranking ponderado de linguagens
+      - name: Compute weighted language ranking
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GH_LOGIN: MikiDevAHM
           RECENT_DAYS: "15"
           MIN_LANGUAGES: "5"
           MAX_LANGUAGES: "8"
-          # Pesos ajustáveis: quanto cada critério pesa no score final
-          WEIGHT_BYTES: "0.5"   # volume de código (proxy de LOC), escala log
-          WEIGHT_REPOS: "0.3"   # em quantos repositórios distintos aparece
-          RECENT_BONUS: "0.3"   # bônus fixo se usada nos últimos RECENT_DAYS
+          # Adjustable weights for the final score
+          WEIGHT_BYTES: "0.5"   # code volume (LOC proxy), log-scaled
+          WEIGHT_REPOS: "0.3"   # how many distinct repos use it
+          RECENT_BONUS: "0.3"   # flat bonus if used in the last RECENT_DAYS
+          CARD_WIDTH: "480"     # match github-metrics.svg width so the cards line up
         run: node scripts/language-stats.mjs
 
-      - name: Commit se houve mudança
+      - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
