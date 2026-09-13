@@ -1,77 +1,77 @@
-<svg width="420" height="338" viewBox="0 0 420 338" xmlns="http://www.w3.org/2000/svg">
-  <rect width="420" height="338" rx="6" fill="#0d1117" />
-  <text x="16" y="28" font-size="16" font-weight="600" fill="#c9d1d9">Linguagens mais usadas</text>
-  <text x="16" y="44" font-size="11" fill="#8b949e">bytes + nº de repos + uso nos últimos 15 dias</text>
+<svg width="480" height="338" viewBox="0 0 480 338" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="480" height="338" rx="6" fill="#0d1117" stroke="#30363d" />
+  <text x="16" y="28" font-size="16" font-weight="600" fill="#c9d1d9">🈷️ Most used languages</text>
+  <text x="16" y="44" font-size="11" fill="#8b949e">bytes + repo count + used in the last 15 days</text>
   
         <g transform="translate(0, 50)">
-          <circle cx="10" cy="60" r="4" fill="#3fb950"><title>Usado nos últimos 15 dias</title></circle>
+          <circle cx="10" cy="60" r="4" fill="#3fb950"><title>Used in the last 15 days</title></circle>
           <circle cx="26" cy="10" r="6" fill="#f1e05a" />
           <text x="40" y="14" font-size="13" fill="#c9d1d9">JavaScript</text>
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#21262d" />
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#f1e05a" />
-          <text x="388" y="14" font-size="11" fill="#8b949e">11 repos</text>
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#21262d" />
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#f1e05a" />
+          <text x="448" y="14" font-size="11" fill="#8b949e">11 repos</text>
         </g>
 
         <g transform="translate(0, 84)">
-          
-          <circle cx="10" cy="10" r="6" fill="#3178c6" />
-          <text x="24" y="14" font-size="13" fill="#c9d1d9">TypeScript</text>
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#21262d" />
-          <rect x="150" y="4" width="152.8947637569305" height="12" rx="6" fill="#3178c6" />
-          <text x="388" y="14" font-size="11" fill="#8b949e">9 repos</text>
+          <circle cx="10" cy="94" r="4" fill="#3fb950"><title>Used in the last 15 days</title></circle>
+          <circle cx="26" cy="10" r="6" fill="#A97BFF" />
+          <text x="40" y="14" font-size="13" fill="#c9d1d9">Kotlin</text>
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#21262d" />
+          <rect x="150" y="4" width="270.6508758963822" height="12" rx="6" fill="#A97BFF" />
+          <text x="448" y="14" font-size="11" fill="#8b949e">6 repos</text>
         </g>
 
         <g transform="translate(0, 118)">
           
-          <circle cx="10" cy="10" r="6" fill="#b07219" />
-          <text x="24" y="14" font-size="13" fill="#c9d1d9">Java</text>
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#21262d" />
-          <rect x="150" y="4" width="145.17967249946201" height="12" rx="6" fill="#b07219" />
-          <text x="388" y="14" font-size="11" fill="#8b949e">7 repos</text>
+          <circle cx="10" cy="10" r="6" fill="#3178c6" />
+          <text x="24" y="14" font-size="13" fill="#c9d1d9">TypeScript</text>
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#21262d" />
+          <rect x="150" y="4" width="192.7747000864622" height="12" rx="6" fill="#3178c6" />
+          <text x="448" y="14" font-size="11" fill="#8b949e">9 repos</text>
         </g>
 
         <g transform="translate(0, 152)">
           
-          <circle cx="10" cy="10" r="6" fill="#A97BFF" />
-          <text x="24" y="14" font-size="13" fill="#c9d1d9">Kotlin</text>
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#21262d" />
-          <rect x="150" y="4" width="141.75189239650857" height="12" rx="6" fill="#A97BFF" />
-          <text x="388" y="14" font-size="11" fill="#8b949e">5 repos</text>
+          <circle cx="10" cy="10" r="6" fill="#b07219" />
+          <text x="24" y="14" font-size="13" fill="#c9d1d9">Java</text>
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#21262d" />
+          <rect x="150" y="4" width="183.0466113249895" height="12" rx="6" fill="#b07219" />
+          <text x="448" y="14" font-size="11" fill="#8b949e">7 repos</text>
         </g>
 
         <g transform="translate(0, 186)">
           
           <circle cx="10" cy="10" r="6" fill="#ff3e00" />
           <text x="24" y="14" font-size="13" fill="#c9d1d9">Svelte</text>
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#21262d" />
-          <rect x="150" y="4" width="123.87299994330834" height="12" rx="6" fill="#ff3e00" />
-          <text x="388" y="14" font-size="11" fill="#8b949e">6 repos</text>
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#21262d" />
+          <rect x="150" y="4" width="156.18257124272463" height="12" rx="6" fill="#ff3e00" />
+          <text x="448" y="14" font-size="11" fill="#8b949e">6 repos</text>
         </g>
 
         <g transform="translate(0, 220)">
           
           <circle cx="10" cy="10" r="6" fill="#5686a5" />
           <text x="24" y="14" font-size="13" fill="#c9d1d9">GLSL</text>
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#21262d" />
-          <rect x="150" y="4" width="119.87480980574587" height="12" rx="6" fill="#5686a5" />
-          <text x="388" y="14" font-size="11" fill="#8b949e">3 repos</text>
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#21262d" />
+          <rect x="150" y="4" width="151.14035980173782" height="12" rx="6" fill="#5686a5" />
+          <text x="448" y="14" font-size="11" fill="#8b949e">3 repos</text>
         </g>
 
         <g transform="translate(0, 254)">
           
           <circle cx="10" cy="10" r="6" fill="#e34c26" />
           <text x="24" y="14" font-size="13" fill="#c9d1d9">HTML</text>
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#21262d" />
-          <rect x="150" y="4" width="117.82144560938887" height="12" rx="6" fill="#e34c26" />
-          <text x="388" y="14" font-size="11" fill="#8b949e">7 repos</text>
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#21262d" />
+          <rect x="150" y="4" width="148.55314489044477" height="12" rx="6" fill="#e34c26" />
+          <text x="448" y="14" font-size="11" fill="#8b949e">7 repos</text>
         </g>
 
         <g transform="translate(0, 288)">
           
           <circle cx="10" cy="10" r="6" fill="#663399" />
           <text x="24" y="14" font-size="13" fill="#c9d1d9">CSS</text>
-          <rect x="150" y="4" width="230" height="12" rx="6" fill="#21262d" />
-          <rect x="150" y="4" width="110.72882932631641" height="12" rx="6" fill="#663399" />
-          <text x="388" y="14" font-size="11" fill="#8b949e">6 repos</text>
+          <rect x="150" y="4" width="290" height="12" rx="6" fill="#21262d" />
+          <rect x="150" y="4" width="139.6102981268945" height="12" rx="6" fill="#663399" />
+          <text x="448" y="14" font-size="11" fill="#8b949e">6 repos</text>
         </g>
 </svg>

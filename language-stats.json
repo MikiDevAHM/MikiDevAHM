@@ -2,7 +2,7 @@
   {
     "name": "JavaScript",
     "color": "#f1e05a",
-    "bytes": 683503,
+    "bytes": 683877,
     "repos": [
       "MikiDevAHM/MikiDevAHM",
       "soudanieldias/saint-bot",
@@ -18,7 +18,23 @@
     ],
     "recent": true,
     "repoCount": 11,
-    "score": 1.0325339146388806
+    "score": 1.0325277704312092
+  },
+  {
+    "name": "Kotlin",
+    "color": "#A97BFF",
+    "bytes": 5561691,
+    "repos": [
+      "ShindoClient/Client",
+      "me50/MikiDevAHM",
+      "ShindoClient/AddonAPI",
+      "ShindoClient/AddonTemplate",
+      "ShindoClient/SpotifyAPI",
+      "MikiDevAHM/TranslationsPlugin"
+    ],
+    "recent": true,
+    "repoCount": 6,
+    "score": 0.9636363636363636
   },
   {
     "name": "TypeScript",
@@ -37,7 +53,7 @@
     ],
     "recent": false,
     "repoCount": 9,
-    "score": 0.6863870823901317
+    "score": 0.6863628664683442
   },
   {
     "name": "Java",
@@ -54,22 +70,7 @@
     ],
     "recent": false,
     "repoCount": 7,
-    "score": 0.6517518937906962
-  },
-  {
-    "name": "Kotlin",
-    "color": "#A97BFF",
-    "bytes": 5556949,
-    "repos": [
-      "ShindoClient/Client",
-      "me50/MikiDevAHM",
-      "ShindoClient/AddonAPI",
-      "ShindoClient/AddonTemplate",
-      "ShindoClient/SpotifyAPI"
-    ],
-    "recent": false,
-    "repoCount": 5,
-    "score": 0.6363636363636364
+    "score": 0.6517265844013088
   },
   {
     "name": "Svelte",
@@ -85,7 +86,7 @@
     ],
     "recent": false,
     "repoCount": 6,
-    "score": 0.5561003197805479
+    "score": 0.5560787657429792
   },
   {
     "name": "GLSL",
@@ -98,7 +99,7 @@
     ],
     "recent": false,
     "repoCount": 3,
-    "score": 0.538151333197035
+    "score": 0.5381262714767555
   },
   {
     "name": "HTML",
@@ -115,7 +116,7 @@
     ],
     "recent": false,
     "repoCount": 7,
-    "score": 0.5289332107107576
+    "score": 0.5289146464975011
   },
   {
     "name": "CSS",
@@ -131,6 +132,6 @@
     ],
     "recent": false,
     "repoCount": 6,
-    "score": 0.4970924852507912
+    "score": 0.4970741719110303
   }
 ]
