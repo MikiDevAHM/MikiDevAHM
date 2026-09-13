@@ -2,26 +2,31 @@
 /**
  * language-stats.mjs
  * ---------------------------------------------------------------
- * Gera um ranking ponderado das linguagens mais usadas considerando:
- *   - volume de código (bytes reportados pela API do GitHub, em escala log)
- *   - número de repositórios distintos que usam a linguagem
- *   - bônus se a linguagem foi usada em algum commit nos últimos N dias
+ * Generates a weighted "most used languages" ranking based on:
+ *   - code volume (bytes reported by the GitHub API, log-scaled)
+ *   - number of distinct repositories using the language
+ *   - a bonus if the language was used in a commit in the last N days
  *
- * Cobre repositórios próprios, de organizações (ownerAffiliations) e
- * repositórios de terceiros aos quais o usuário contribuiu
- * (repositoriesContributedTo) — tudo via GraphQL, sem clonar nada,
- * então roda em segundos, não em minutos.
+ * Covers owned repos, organization repos (ownerAffiliations) and
+ * third-party repos the user contributed to (repositoriesContributedTo)
+ * — all through GraphQL, no cloning involved, so it runs in seconds
+ * instead of minutes.
+ *
+ * The output SVG is styled to visually match lowlighter/metrics'
+ * classic template card (same dark background, same width), so it
+ * can be stacked directly under github-metrics.svg in the README.
  *
  * Env vars:
- *   GH_TOKEN          (obrigatório) token com escopo repo/read:org
- *   GH_LOGIN          (obrigatório) usuário alvo, ex: MikiDevAHM
+ *   GH_TOKEN          (required) token with repo/read:org scope
+ *   GH_LOGIN          (required) target user, e.g. MikiDevAHM
  *   RECENT_DAYS       (default 15)
- *   MIN_LANGUAGES     (default 5)   apenas informativo/validação
+ *   MIN_LANGUAGES     (default 5)   informational only
  *   MAX_LANGUAGES     (default 8)
  *   WEIGHT_BYTES      (default 0.5)
  *   WEIGHT_REPOS      (default 0.3)
  *   RECENT_BONUS      (default 0.3)
- *   IGNORED_LANGUAGES (default "")  ex: "html,css"
+ *   IGNORED_LANGUAGES (default "")  e.g. "html,css"
+ *   CARD_WIDTH        (default 480) should match github-metrics.svg width
  *   OUT_SVG           (default "language-stats.svg")
  *   OUT_JSON          (default "language-stats.json")
  * ---------------------------------------------------------------
@@ -39,11 +44,12 @@ const IGNORED_LANGUAGES = (process.env.IGNORED_LANGUAGES ?? "")
   .split(",")
   .map((s) => s.trim().toLowerCase())
   .filter(Boolean);
+const CARD_WIDTH = Number(process.env.CARD_WIDTH ?? 480);
 const OUT_SVG = process.env.OUT_SVG ?? "language-stats.svg";
 const OUT_JSON = process.env.OUT_JSON ?? "language-stats.json";
 
 if (!GH_TOKEN || !GH_LOGIN) {
-  console.error("Erro: defina GH_TOKEN e GH_LOGIN nas env vars.");
+  console.error("Error: set GH_TOKEN and GH_LOGIN env vars.");
   process.exit(1);
 }
 
@@ -145,7 +151,7 @@ async function fetchRecentRepoNames(days) {
 }
 
 function aggregate(repos, recentRepoNames) {
-  // dedup by nameWithOwner (repo pode vir das duas queries)
+  // dedup by nameWithOwner (a repo can come from both queries)
   const byRepo = new Map();
   for (const r of repos) {
     if (r.isFork) continue;
@@ -194,19 +200,19 @@ function score(entries) {
 }
 
 function renderSvg(ranked) {
-  const width = 420;
+  const width = CARD_WIDTH;
   const rowHeight = 34;
   const paddingTop = 50;
   const height = paddingTop + ranked.length * rowHeight + 16;
   const maxScore = Math.max(...ranked.map((r) => r.score), 0.0001);
-  const barMaxWidth = 230;
+  const barMaxWidth = width - 190;
 
   const rows = ranked
     .map((r, i) => {
       const y = paddingTop + i * rowHeight;
       const barWidth = Math.max(4, (r.score / maxScore) * barMaxWidth);
       const recentBadge = r.recent
-        ? `<circle cx="10" cy="${y + 10}" r="4" fill="#3fb950"><title>Usado nos últimos ${RECENT_DAYS} dias</title></circle>`
+        ? `<circle cx="10" cy="${y + 10}" r="4" fill="#3fb950"><title>Used in the last ${RECENT_DAYS} days</title></circle>`
         : "";
       return `
         <g transform="translate(0, ${y})">
@@ -220,10 +226,10 @@ function renderSvg(ranked) {
     })
     .join("\n");
 
-  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-  <rect width="${width}" height="${height}" rx="6" fill="#0d1117" />
-  <text x="16" y="28" font-size="16" font-weight="600" fill="#c9d1d9">Linguagens mais usadas</text>
-  <text x="16" y="44" font-size="11" fill="#8b949e">bytes + nº de repos + uso nos últimos ${RECENT_DAYS} dias</text>
+  return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif">
+  <rect width="${width}" height="${height}" rx="6" fill="#0d1117" stroke="#30363d" />
+  <text x="16" y="28" font-size="16" font-weight="600" fill="#c9d1d9">🈷️ Most used languages</text>
+  <text x="16" y="44" font-size="11" fill="#8b949e">bytes + repo count + used in the last ${RECENT_DAYS} days</text>
   ${rows}
 </svg>`;
 }
@@ -250,7 +256,7 @@ async function main() {
 
   if (ranked.length < MIN_LANGUAGES) {
     console.warn(
-      `Aviso: só foram encontradas ${ranked.length} linguagens distintas (mínimo pedido: ${MIN_LANGUAGES}). Isso reflete os dados reais da conta, não é um bug do script.`
+      `Warning: only ${ranked.length} distinct languages found (requested minimum: ${MIN_LANGUAGES}). This reflects the account's real data, not a script bug.`
     );
   }
 
@@ -258,10 +264,10 @@ async function main() {
   await fs.writeFile(OUT_SVG, renderSvg(ranked), "utf8");
   await fs.writeFile(OUT_JSON, JSON.stringify(ranked, (k, v) => (v instanceof Set ? [...v] : v), 2), "utf8");
 
-  console.log(`OK: ${ranked.length} linguagens -> ${OUT_SVG} / ${OUT_JSON}`);
+  console.log(`OK: ${ranked.length} languages -> ${OUT_SVG} / ${OUT_JSON}`);
   for (const r of ranked) {
     console.log(
-      `  ${r.name.padEnd(14)} score=${r.score.toFixed(3)} bytes=${r.bytes} repos=${r.repoCount} recente=${r.recent}`
+      `  ${r.name.padEnd(14)} score=${r.score.toFixed(3)} bytes=${r.bytes} repos=${r.repoCount} recent=${r.recent}`
     );
   }
 }
